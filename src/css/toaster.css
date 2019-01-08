@@ -1,0 +1,39 @@
+.toaster {
+   background-color: #333;
+   color: #fff;
+   font-size: 1em;
+   border-radius: .1em;
+
+   display: none;
+   text-align: center;
+   position: fixed;
+   min-width: 15em;
+   margin-left: -10em;
+   left: 50%;
+   bottom: 2.5em;
+   padding: 1em;
+   z-index: 1;
+
+   -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+   animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@-webkit-keyframes fadein {
+   from { bottom: 0; opacity: 0; }
+   to { bottom: 2.5em; opacity: 1; }
+}
+
+@keyframes fadein {
+   from { bottom: 0; opacity: 0; }
+   to { bottom: 2.5em; opacity: 1; }
+}
+
+@-webkit-keyframes fadeout {
+   from { bottom: 2.5em; opacity: 1; }
+   to { bottom: 0; opacity: 0; }
+}
+
+@keyframes fadeout {
+   from { bottom: 2.5em; opacity: 1; }
+   to { bottom: 0; opacity: 0; }
+}
