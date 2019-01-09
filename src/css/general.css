@@ -236,3 +236,14 @@ textarea {
 
    -webkit-appearance: none;
 }
+
+/*** FONTS ***/
+/* currently unused */
+@font-face {
+font-family: "RS";
+src:
+   url("fonts/abrilfatface.eot"),
+   url("fonts/abrilfatface.otf") format("opentype"),
+   url("fonts/abrilfatface.woff") format("woff"),
+   url("fonts/abrilfatface.svg#filename") format("svg");
+}
