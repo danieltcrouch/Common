@@ -1,14 +1,15 @@
 $(document).on( "click", ".title .clickable", showInstructions );
 $(document).on( "click", ".inverseButton", selectRadioButton );
-$(document).ready(function(){
-    $("a").click(function (event) {
-        if ( this.href.indexOf( "http://religionandstory.webutu.com/utility" ) !== -1 )
-        {
-            event.preventDefault();
-            window.location = this.href;
-        }
-    });
-});
+//todo - what was this for? SEO?
+// $(document).ready(function(){
+//     $("a").click(function (event) {
+//         if ( this.href.indexOf( "http://religionandstory.webutu.com/utility" ) !== -1 )
+//         {
+//             event.preventDefault();
+//             window.location = this.href;
+//         }
+//     });
+// });
 
 function selectRadioButton( e )
 {
