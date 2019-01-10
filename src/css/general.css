@@ -117,10 +117,6 @@ html {
    margin-bottom: .5em;
 }
 
-.clickable {
-   cursor:           pointer;
-}
-
 .tile {
    cursor:           pointer;
 }
@@ -195,9 +191,12 @@ html {
 .selectedButton:hover {
 }
 
+.clickable, .link {
+   cursor:           pointer;
+}
+
 .link {
    font-weight: bold;
-   cursor: pointer;
 }
 
 .link:hover {
