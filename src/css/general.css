@@ -102,17 +102,17 @@ html {
    margin-bottom: 1.5em;
 }
 
-.list {
+.textBlock {
 }
 
 @media only screen and (min-width: 768px) {
-   .list {
+   .textBlock {
       padding-left: 15%;
       padding-right: 15%;
    }
 }
 
-.list div {
+.textBlock div {
    text-align:    left;
    margin-bottom: .5em;
 }
