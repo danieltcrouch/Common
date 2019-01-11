@@ -52,7 +52,7 @@
 
 .modal-header {
    text-align: center;
-   background-color: #000000;
+   background-color: var(--mainColor);
    color: white;
 
    padding: .1em 1.5em;
@@ -80,7 +80,7 @@
 }
 
 .close:hover, .close:focus {
-   color: #222222;
+   color: #333333;
    text-decoration: none;
    cursor: pointer;
 }
