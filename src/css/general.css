@@ -204,6 +204,7 @@ html {
 }
 
 .input {
+   font-family:   var(--normalFont);
    border:        1px solid #ccc;
 
    width:         100%;
