@@ -10,6 +10,14 @@
 /* Inside PHP Include: rules for where it will be included */
 
 /*** META ***/
+:root {
+   --mainColor:   #000000;
+   --hoverColor:  #333333;
+   --normalFont:  "Helvetica Neue","Helvetica","Arial", sans-serif;
+   --titleFont:   "Helvetica Neue","Helvetica","Arial", sans-serif;
+   --titleWeight: bold;
+}
+
 *{
    box-sizing: border-box;
 }
@@ -71,7 +79,7 @@
 
 /*** GUI ***/
 html {
-   font-family: "Helvetica Neue","Helvetica","Arial", sans-serif;
+   font-family: var(--normalFont);
 }
 
 .center {
@@ -79,34 +87,34 @@ html {
 }
 
 .title {
-   font-family:   "Helvetica Neue","Helvetica","Arial", sans-serif;
-   font-weight:   bold;
+   font-family:   var(--titleFont);
+   font-weight:   var(--titleWeight);
    font-size:     3em;
 }
 
 .subtitle {
-   font-family:   "Helvetica Neue","Helvetica","Arial", sans-serif;
-   font-weight:   bold;
+   font-family:   var(--titleFont);
+   font-weight:   var(--titleWeight);
    font-size:     2em;
 }
 
-.list {
+.textBlock {
+   margin-bottom: 1.5em;
+}
+
+.textBlock {
 }
 
 @media only screen and (min-width: 768px) {
-   .list {
+   .textBlock {
       padding-left: 15%;
       padding-right: 15%;
    }
 }
 
-.list div {
+.textBlock div {
    text-align:    left;
    margin-bottom: .5em;
-}
-
-.clickable {
-   cursor:           pointer;
 }
 
 .tile {
@@ -119,8 +127,9 @@ html {
 }
 
 .tile div {
-   font-family:      "Helvetica Neue","Helvetica","Arial", sans-serif;
-   background-color: #000000;
+   font-family:      var(--titleFont);
+   font-weight:      var(--titleWeight);
+   background-color: var(--mainColor);
    color:            #ffffff;
    white-space:      nowrap;
 
@@ -128,12 +137,13 @@ html {
 }
 
 .tile:hover div {
-   background-color: #222222;
+   background-color: var(--hoverColor);
 }
 
 .navButton {
-   font-family:      "Helvetica Neue","Helvetica","Arial", sans-serif;
-   background-color: #000000;
+   font-family:      var(--titleFont);
+   font-weight:      var(--titleWeight);
+   background-color: var(--mainColor);
    color:            #ffffff;
    white-space:      nowrap;
    cursor:           pointer;
@@ -143,14 +153,15 @@ html {
 }
 
 .navButton:hover {
-   background-color: #222222;
+   background-color: var(--hoverColor);
 }
 
 .button, .fileButton {
-   font-family:      "Helvetica Neue","Helvetica","Arial", sans-serif;
+   font-family:      var(--titleFont);
+   font-weight:      var(--titleWeight);
    font-size:        1.5em;
    text-align:       center;
-   background-color: #000000;
+   background-color: var(--mainColor);
    color:            #ffffff;
    cursor:           pointer;
    border:           none;
@@ -158,31 +169,34 @@ html {
    padding:          .5em;
 }
 
-.button:hover,.fileButton:hover /*.bigButton:hover*/ {
-   background-color: #222222;
+.button:hover, .fileButton:hover {
+   background-color: var(--hoverColor);
 }
 
 .inverseButton {
-   border:           .1em solid #222222;
-   color:            #222222;
+   border:           .1em solid var(--hoverColor);
+   color:            var(--hoverColor);
    background-color: #ffffff;
 }
 
 .inverseButton:hover {
-   background-color: #222222;
+   background-color: var(--hoverColor);
    color:            #ffffff;
 }
 
 .selectedButton {
-   border:           .1em solid #000000;
+   border:           .1em solid var(--mainColor);
 }
 
 .selectedButton:hover {
 }
 
+.clickable, .link {
+   cursor:           pointer;
+}
+
 .link {
    font-weight: bold;
-   cursor: pointer;
 }
 
 .link:hover {
@@ -190,24 +204,24 @@ html {
 }
 
 .input {
-   font-family:   "Helvetica Neue","Helvetica","Arial", sans-serif;
+   font-family:   var(--normalFont);
    border:        1px solid #ccc;
 
-	width:         100%;
-	padding:       1em 1.5em;
-	margin-bottom: 1em;
+   width:         100%;
+   padding:       1em 1.5em;
+   margin-bottom: 1em;
 }
 
 .logoImage {
    width:         8em;
-	height:        8em;
+   height:        8em;
 }
 
 /*** HTML TAGS ***/
 a {
-   text-decoration: inherit;
-   color: inherit;
-   cursor: inherit;
+    text-decoration: inherit;
+    color: inherit;
+    cursor: inherit;
 }
 
 textarea {
@@ -221,4 +235,15 @@ textarea {
    font-size: 16px;
 
    -webkit-appearance: none;
+}
+
+/*** FONTS ***/
+/* currently unused */
+@font-face {
+font-family: "RS";
+src:
+   url("fonts/abrilfatface.eot"),
+   url("fonts/abrilfatface.otf") format("opentype"),
+   url("fonts/abrilfatface.woff") format("woff"),
+   url("fonts/abrilfatface.svg#filename") format("svg");
 }
