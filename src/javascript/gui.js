@@ -20,6 +20,18 @@ function selectRadioButton( e )
     });
 }
 
+function deselectAllRadioButtons( groupName )
+{
+    var allButtons = $('button[name=' + groupName + ']').toArray();
+    allButtons.forEach( function( button ) {
+        if ( button.classList.contains( "selectedButton" ) )
+        {
+            button.classList.remove( "selectedButton" );
+            button.classList.add( "inverseButton" );
+        }
+    });
+}
+
 function getSelectedRadioButton( groupName )
 {
     var result = null;
