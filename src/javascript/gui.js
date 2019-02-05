@@ -130,31 +130,37 @@ function blurBackground()
     $('body').addClass( "blur" );
 }
 
-function closeModal()
+function closeModal( modal )
 {
     $('body').removeClass( "blur" );
-    $('#modal').hide();
+    modal.hide();
 }
 
-function setCloseHandlers( close, submit, overwriteClose )
+function setCloseHandlers( modal, close, submit, overwriteClose, leftButton, rightButton )
 {
-    close = close || closeModal;
+    var defaultClose = function() { closeModal( modal ) };
+    close = close || defaultClose;
     submit = submit || close;
 
-    var modal = $('#modal');
-    modal.find('#cancelButton').off( "click" );
-    modal.find('#submitButton').off( "click" );
-    modal.find('#cancelButton').click( close );
-    modal.find('#submitButton').click( submit );
+    leftButton = leftButton || modal.find('#submitButton');
+    leftButton.off( "click" );
+    leftButton.click( submit );
+    rightButton = rightButton || modal.find('#cancelButton');
+    rightButton.off( "click" );
+    rightButton.click( close );
 
-    modal.find('#prompt').off( "keyup" );
-    modal.find('#prompt').keyup( function(e) {
-        if ( e.keyCode === 13 ) {
-            submit();
-        }
-    });
+    var prompt = modal.find('#prompt');
+    if ( prompt && prompt.is( "input" ) )
+    {
+        modal.find('#prompt').off( "keyup" );
+        modal.find('#prompt').keyup( function(e) {
+            if ( e.keyCode === 13 ) {
+                submit();
+            }
+        });
+    }
 
-    close = overwriteClose ? closeModal : close;
+    close = overwriteClose ? defaultClose : close;
     modal.find('.close').off( "click" );
     modal.find('.close').click( close );
 
@@ -181,7 +187,7 @@ function showMessage( headerText, message, style )
 
     modal.show();
 
-    setCloseHandlers();
+    setCloseHandlers( modal );
     blurBackground();
 }
 
@@ -205,7 +211,7 @@ function showConfirm( headerText, message, callback, style )
     function close( answer )
     {
         submit.hide();
-        closeModal();
+        closeModal( modal );
         callback( answer === true );
     }
 
@@ -214,7 +220,7 @@ function showConfirm( headerText, message, callback, style )
         close( true );
     }
 
-    setCloseHandlers( close, confirm );
+    setCloseHandlers( modal, close, confirm );
     blurBackground();
 }
 
@@ -231,13 +237,15 @@ function showBinaryChoice( headerText, message, leftChoice, rightChoice, callbac
         body.css( style );
     }
 
-    modal.find('#leftButton').html( leftChoice );
-    modal.find('#rightButton').html( rightChoice );
+    var leftButton = modal.find('#leftButton');
+    var rightButton = modal.find('#rightButton');
+    leftButton.html( leftChoice );
+    rightButton.html( rightChoice );
     modal.show();
 
     function close( answer )
     {
-        closeModal();
+        closeModal( modal );
         callback( answer === true );
     }
 
@@ -246,7 +254,7 @@ function showBinaryChoice( headerText, message, leftChoice, rightChoice, callbac
         close( true ); //returns TRUE for clicking Left Choice
     }
 
-    setCloseHandlers( close, confirm, true );
+    setCloseHandlers( modal, close, confirm, true, leftButton, rightButton );
     blurBackground();
 }
 
@@ -270,7 +278,7 @@ function showPrompt( headerText, message, callback, placeholder, clearAfterward,
 
     function clear()
     {
-        closeModal();
+        closeModal( modal );
 
         var value = prompt.val();
         if ( clearAfterward )
@@ -292,7 +300,7 @@ function showPrompt( headerText, message, callback, placeholder, clearAfterward,
         callback( value );
     }
 
-    setCloseHandlers( close, submit );
+    setCloseHandlers( modal, close, submit );
     blurBackground();
 }
 
@@ -316,7 +324,7 @@ function showBigPrompt( headerText, message, callback, value, clearAfterward, st
 
     function clear()
     {
-        closeModal();
+        closeModal( modal );
 
         var value = prompt.val();
         if ( clearAfterward )
@@ -338,7 +346,7 @@ function showBigPrompt( headerText, message, callback, value, clearAfterward, st
         callback( value );
     }
 
-    setCloseHandlers( close, submit );
+    setCloseHandlers( modal, close, submit );
     blurBackground();
 }
 
