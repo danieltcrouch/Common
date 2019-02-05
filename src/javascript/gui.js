@@ -1,6 +1,29 @@
 $(document).on( "click", ".title .clickable", showInstructions );
 $(document).on( "click", ".inverseButton", selectRadioButton );
 
+
+/*****************DISPLAY*****************/
+
+
+function showInstructions( e )
+{
+    showMessage( "Instructions", $('#instructions').html() );
+}
+
+function scrollToId( id )
+{
+    var hash = "#" + id;
+    $('html, body').animate(
+        { scrollTop: $(hash).offset().top },
+        800,
+        function(){ window.location.hash = hash; }
+    );
+}
+
+
+/******************RADIO******************/
+
+
 function selectRadioButton( e )
 {
 	var clickedButton = e.target;
@@ -50,20 +73,57 @@ function setRadioCallback( groupName, callback )
     $(document).on( "click", "button[name=" + groupName + "]", function(){callback( $(this).attr("id") );} );
 }
 
-function showInstructions( e )
+
+/*******************TAB*******************/
+
+
+function selectTab( e )
 {
-    showMessage( "Instructions", $('#instructions').html() );
+	var clickedButton = e.target;
+	var groupName = clickedButton.attributes["name"].value;
+	var allButtons = $('button[name=' + groupName + ']').toArray();
+    allButtons.forEach( function( button ) {
+        if ( button.id === clickedButton.id )
+        {
+            button.classList.add( "selectedButton" );
+            button.classList.remove( "inverseButton" );
+        }
+        else
+        {
+            button.classList.add( "inverseButton" );
+            button.classList.remove( "selectedButton" );
+        }
+    });
 }
 
-function scrollToId( id )
+function deselectAllTabs( groupName )
 {
-    var hash = "#" + id;
-    $('html, body').animate(
-        { scrollTop: $(hash).offset().top },
-        800,
-        function(){ window.location.hash = hash; }
-    );
+    var allButtons = $('button[name=' + groupName + ']').toArray();
+    allButtons.forEach( function( button ) {
+        if ( button.classList.contains( "selectedButton" ) )
+        {
+            button.classList.remove( "selectedButton" );
+            button.classList.add( "inverseButton" );
+        }
+    });
 }
+
+function getSelectedTab( groupName )
+{
+    var result = null;
+	var allButtons = $('button[name=' + groupName + ']').toArray();
+    allButtons.forEach( function( button ) {
+        if ( button.classList.contains( "selectedButton" ) )
+        {
+            result = button;
+        }
+    });
+    return result;
+}
+
+
+/******************MODAL******************/
+
 
 function blurBackground()
 {
@@ -106,14 +166,17 @@ function setCloseHandlers( close, submit, overwriteClose )
     });
 }
 
-function showMessage( header, message, style )
+function showMessage( headerText, message, style )
 {
     var modal = $('#modal');
-    $('#modalHeader').text( header );
-    $('#modalBody').html( message );
+    var header = modal.find('#modalHeader');
+    var body = modal.find('#modalBody');
+
+    header.text( headerText );
+    body.html( message );
     if ( style )
     {
-        $('#modalBody').css( style );
+        body.css( style );
     }
 
     modal.show();
@@ -122,30 +185,26 @@ function showMessage( header, message, style )
     blurBackground();
 }
 
-function showConfirm( header, message, callback, style )
+function showConfirm( headerText, message, callback, style )
 {
     var modal = $('#modal');
-    $('#modalHeader').text( header );
-    $('#modalBody').html( message );
+    var header = modal.find('#modalHeader');
+    var body = modal.find('#modalBody');
+    var submit = modal.find('#modalSubmit');
+
+    header.text( headerText );
+    body.html( message );
     if ( style )
     {
-        $('#modalBody').css( style );
+        body.css( style );
     }
 
-    $('#submitButton').html( "OK" );
-    $('#submitButton').css( {"width":"5em"} );
-    $('#cancelButton').css( {"width":"5em"} );
-    $('#cancelButton').show();
-    $('#modalSubmit').show();
+    submit.show();
     modal.show();
 
     function close( answer )
     {
-        $('#submitButton').html( "Submit" );
-        $('#submitButton').css( {"width":"10em"} );
-        $('#cancelButton').css( {"width":"10em"} );
-        $('#cancelButton').hide();
-        $('#modalSubmit').hide();
+        submit.hide();
         closeModal();
         callback( answer === true );
     }
@@ -159,28 +218,25 @@ function showConfirm( header, message, callback, style )
     blurBackground();
 }
 
-function showBinaryChoice( header, message, leftChoice, rightChoice, callback, style )
+function showBinaryChoice( headerText, message, leftChoice, rightChoice, callback, style )
 {
-    var modal = $('#modal');
-    $('#modalHeader').text( header );
-    $('#modalBody').html( message );
+    var modal = $('#binaryModal');
+    var header = modal.find('#modalHeader');
+    var body = modal.find('#modalBody');
+
+    header.text( headerText );
+    body.html( message );
     if ( style )
     {
-        $('#modalBody').css( style );
+        body.css( style );
     }
 
-    $('#submitButton').html( leftChoice );
-    $('#cancelButton').html( rightChoice );
-    $('#cancelButton').show();
-    $('#modalSubmit').show();
+    modal.find('#leftButton').html( leftChoice );
+    modal.find('#rightButton').html( rightChoice );
     modal.show();
 
     function close( answer )
     {
-        $('#submitButton').html( "Submit" );
-        $('#cancelButton').html( "Cancel" );
-        $('#cancelButton').hide();
-        $('#modalSubmit').hide();
         closeModal();
         callback( answer === true );
     }
@@ -194,37 +250,32 @@ function showBinaryChoice( header, message, leftChoice, rightChoice, callback, s
     blurBackground();
 }
 
-function showBigPrompt( header, message, callback, value, clearAfterward, style )
+function showPrompt( headerText, message, callback, placeholder, clearAfterward, style )
 {
-    var modal = $('#modal');
-    $('#modalHeader').text( header );
-    $('#modalBody').html( message );
-    $('#bigPrompt').val( value );
+    var modal = $('#promptModal');
+    var header = modal.find('#modalHeader');
+    var body = modal.find('#modalBody');
+    var prompt = modal.find('#prompt');
 
+    header.text( headerText );
+    prompt.attr( "placeholder", placeholder );
+    body.html( message );
     if ( style )
     {
-        $('#modalBody').css( style );
+        body.css( style );
     }
 
-    $('#modalPrompt').show();
-    $('#modalSubmit').show();
-    $('#bigPrompt').show();
-    $('#prompt').hide();
     modal.show();
-    $('#bigPrompt').focus();
+    prompt.focus();
 
     function clear()
     {
-        $('#modalPrompt').hide();
-        $('#modalSubmit').hide();
-        $('#bigPrompt').hide();
-        $('#prompt').show();
         closeModal();
 
-        var value = $('#bigPrompt').val();
+        var value = prompt.val();
         if ( clearAfterward )
         {
-            $('#bigPrompt').val( "" );
+            prompt.val( "" );
         }
         return value;
     }
@@ -245,33 +296,32 @@ function showBigPrompt( header, message, callback, value, clearAfterward, style 
     blurBackground();
 }
 
-function showPrompt( header, message, callback, placeholder, clearAfterward, style )
+function showBigPrompt( headerText, message, callback, value, clearAfterward, style )
 {
-    var modal = $('#modal');
-    $('#modalHeader').text( header );
-    $('#modalBody').html( message );
-    $('#prompt').attr( "placeholder", placeholder );
+    var modal = $('#bigPromptModal');
+    var header = modal.find('#modalHeader');
+    var body = modal.find('#modalBody');
+    var prompt = modal.find('#prompt');
 
+    header.text( headerText );
+    prompt.val( value );
+    body.html( message );
     if ( style )
     {
-        $('#modalBody').css( style );
+        body.css( style );
     }
 
-    $('#modalPrompt').show();
-    $('#modalSubmit').show();
     modal.show();
-    $('#prompt').focus();
+    prompt.focus();
 
     function clear()
     {
-        $('#modalPrompt').hide();
-        $('#modalSubmit').hide();
         closeModal();
 
-        var value = $('#prompt').val();
+        var value = prompt.val();
         if ( clearAfterward )
         {
-            $('#prompt').val( "" );
+            prompt.val( "" );
         }
         return value;
     }
@@ -291,6 +341,10 @@ function showPrompt( header, message, callback, placeholder, clearAfterward, sty
     setCloseHandlers( close, submit );
     blurBackground();
 }
+
+
+/*****************TOASTER*****************/
+
 
 function showToaster( message )
 {

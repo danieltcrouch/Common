@@ -156,21 +156,22 @@ html {
    background-color: var(--hoverColor);
 }
 
-.button, .fileButton {
-   font-family:      var(--titleFont);
-   font-weight:      var(--titleWeight);
-   font-size:        1.5em;
-   text-align:       center;
-   background-color: var(--mainColor);
-   color:            #ffffff;
-   cursor:           pointer;
-   border:           none;
-
-   padding:          .5em;
+.inverseTab {
+   border:           .1em solid var(--hoverColor);
+   color:            var(--hoverColor);
+   background-color: #ffffff;
 }
 
-.button:hover, .fileButton:hover {
+.inverseTab:hover {
    background-color: var(--hoverColor);
+   color:            #ffffff;
+}
+
+.selectedTab {
+   border:           .1em solid var(--mainColor);
+}
+
+.selectedTab:hover {
 }
 
 .inverseButton {
@@ -189,6 +190,23 @@ html {
 }
 
 .selectedButton:hover {
+}
+
+.button, .fileButton {
+   font-family:      var(--titleFont);
+   font-weight:      var(--titleWeight);
+   font-size:        1.5em;
+   text-align:       center;
+   background-color: var(--mainColor);
+   color:            #ffffff;
+   cursor:           pointer;
+   border:           none;
+
+   padding:          .5em;
+}
+
+.button:hover, .fileButton:hover {
+   background-color: var(--hoverColor);
 }
 
 .clickable, .link {
