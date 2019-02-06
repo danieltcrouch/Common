@@ -1,5 +1,6 @@
 $(document).on( "click", ".title .clickable", showInstructions );
 $(document).on( "click", ".inverseButton", selectRadioButton );
+$(document).on( "click", ".inverseTab", selectTab );
 
 
 /*****************DISPLAY*****************/
@@ -85,13 +86,13 @@ function selectTab( e )
     allButtons.forEach( function( button ) {
         if ( button.id === clickedButton.id )
         {
-            button.classList.add( "selectedButton" );
-            button.classList.remove( "inverseButton" );
+            button.classList.add( "selectedTab" );
+            button.classList.remove( "inverseTab" );
         }
         else
         {
-            button.classList.add( "inverseButton" );
-            button.classList.remove( "selectedButton" );
+            button.classList.add( "inverseTab" );
+            button.classList.remove( "selectedTab" );
         }
     });
 }

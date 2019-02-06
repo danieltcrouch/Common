@@ -33,6 +33,7 @@
 @media only screen and (min-width: 768px) {
    .col-1   {width: 10%;}
    .col-2   {width: 20%;}
+   .col-2h  {width: 25%;}
    .col-3   {width: 30%;}
    .col-3r  {width: 33.3%;}
    .col-4   {width: 40%;}
@@ -47,6 +48,7 @@
 @media only screen and (min-width: 600px) {
    .col-m-1   {width: 10%;}
    .col-m-2   {width: 20%;}
+   .col-m-2h  {width: 25%;}
    .col-m-3   {width: 30%;}
    .col-m-3r  {width: 33.3%;}
    .col-m-4   {width: 40%;}
@@ -147,6 +149,7 @@ html {
    color:            #ffffff;
    white-space:      nowrap;
    cursor:           pointer;
+   border:           none;
 
    padding:          .5em;
    margin-bottom:    .5em;
@@ -156,8 +159,24 @@ html {
    background-color: var(--hoverColor);
 }
 
+.button, .fileButton {
+   font-family:      var(--titleFont);
+   font-weight:      var(--titleWeight);
+   font-size:        1.5em;
+   text-align:       center;
+   background-color: var(--mainColor);
+   color:            #ffffff;
+   cursor:           pointer;
+   border:           none;
+
+   padding:          .5em;
+}
+
+.button:hover, .fileButton:hover {
+   background-color: var(--hoverColor);
+}
+
 .inverseTab {
-   border:           .1em solid var(--hoverColor);
    color:            var(--hoverColor);
    background-color: #ffffff;
 }
@@ -168,7 +187,6 @@ html {
 }
 
 .selectedTab {
-   border:           .1em solid var(--mainColor);
 }
 
 .selectedTab:hover {
@@ -190,23 +208,6 @@ html {
 }
 
 .selectedButton:hover {
-}
-
-.button, .fileButton {
-   font-family:      var(--titleFont);
-   font-weight:      var(--titleWeight);
-   font-size:        1.5em;
-   text-align:       center;
-   background-color: var(--mainColor);
-   color:            #ffffff;
-   cursor:           pointer;
-   border:           none;
-
-   padding:          .5em;
-}
-
-.button:hover, .fileButton:hover {
-   background-color: var(--hoverColor);
 }
 
 .clickable, .link {
