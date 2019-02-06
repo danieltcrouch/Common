@@ -1,6 +1,6 @@
 $(document).on( "click", ".title .clickable", showInstructions );
 $(document).on( "click", ".inverseButton", selectRadioButton );
-$(document).on( "click", ".inverseTab", selectTab );
+$(document).on( "click", ".inverseTab", selectTabButton );
 
 
 /*****************DISPLAY*****************/
@@ -78,7 +78,7 @@ function setRadioCallback( groupName, callback )
 /*******************TAB*******************/
 
 
-function selectTab( e )
+function selectTabButton( e )
 {
 	var clickedButton = e.target;
 	var groupName = clickedButton.attributes["name"].value;
@@ -97,7 +97,7 @@ function selectTab( e )
     });
 }
 
-function deselectAllTabs( groupName )
+function deselectAllTabButtons( groupName )
 {
     var allButtons = $('button[name=' + groupName + ']').toArray();
     allButtons.forEach( function( button ) {
@@ -109,7 +109,7 @@ function deselectAllTabs( groupName )
     });
 }
 
-function getSelectedTab( groupName )
+function getSelectedTabButton( groupName )
 {
     var result = null;
 	var allButtons = $('button[name=' + groupName + ']').toArray();
@@ -125,6 +125,43 @@ function getSelectedTab( groupName )
 function setTabCallback( groupName, callback )
 {
     $(document).on( "click", "button[name=" + groupName + "]", function(){callback( $(this).attr("id") );} );
+}
+
+function setTabCallbackToDisplay( groupName )
+{
+    setTabCallback( groupName, function( tabId ) { displayOnlyTab( tabId, groupName ); } );
+}
+
+function getTabs( groupName )
+{
+    var allTabs = $("div.tab");
+    if ( groupName )
+    {
+        allTabs = allTabs.filter( "." + groupName + "Tab" );
+    }
+    return allTabs;
+}
+
+function displayOnlyTab( tabId, groupName )
+{
+    hideAllTabs( groupName );
+    $( "div#" + tabId + ".tab" ).show();
+}
+
+function hideAllTabs( groupName )
+{
+    var allTabs = getTabs( groupName );
+    allTabs.hide();
+}
+
+function openTab( tabId )
+{
+    $( "div#" + tabId + ".tab" ).show();
+}
+
+function closeTab( tabId )
+{
+    $( "div#" + tabId + ".tab" ).hide();
 }
 
 
