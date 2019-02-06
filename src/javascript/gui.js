@@ -101,10 +101,10 @@ function deselectAllTabs( groupName )
 {
     var allButtons = $('button[name=' + groupName + ']').toArray();
     allButtons.forEach( function( button ) {
-        if ( button.classList.contains( "selectedButton" ) )
+        if ( button.classList.contains( "selectedTab" ) )
         {
-            button.classList.remove( "selectedButton" );
-            button.classList.add( "inverseButton" );
+            button.classList.remove( "selectedTab" );
+            button.classList.add( "inverseTab" );
         }
     });
 }
@@ -114,12 +114,17 @@ function getSelectedTab( groupName )
     var result = null;
 	var allButtons = $('button[name=' + groupName + ']').toArray();
     allButtons.forEach( function( button ) {
-        if ( button.classList.contains( "selectedButton" ) )
+        if ( button.classList.contains( "selectedTab" ) )
         {
             result = button;
         }
     });
     return result;
+}
+
+function setTabCallback( groupName, callback )
+{
+    $(document).on( "click", "button[name=" + groupName + "]", function(){callback( $(this).attr("id") );} );
 }
 
 
