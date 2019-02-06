@@ -129,17 +129,28 @@ function setTabCallback( groupName, callback )
 
 function setTabCallbackToDisplay( groupName )
 {
+    setTabCallback( groupName, function( tabId ) { displayOnlyTab( tabId ); } );
+}
+
+function setTabCallbackToDisplayByGroup( groupName )
+{
     setTabCallback( groupName, function( tabId ) { displayOnlyTab( tabId, groupName ); } );
+}
+
+function getTabIds( groupName )
+{
+    //Returns them in order of the Buttons
+    return  $('button[name=' + groupName + ']').map( function() { return $( this ).attr('id'); } ).get();
 }
 
 function getTabs( groupName )
 {
-    var allTabs = $("div.tab");
+    var tabs = $("div.tab");
     if ( groupName )
     {
-        allTabs = allTabs.filter( "." + groupName + "Tab" );
+        tabs = tabs.filter( "." + groupName + "Tab" );
     }
-    return allTabs;
+    return tabs;
 }
 
 function displayOnlyTab( tabId, groupName )
@@ -150,8 +161,17 @@ function displayOnlyTab( tabId, groupName )
 
 function hideAllTabs( groupName )
 {
-    var allTabs = getTabs( groupName );
-    allTabs.hide();
+    var tabs = getTabs( groupName );
+    tabs.hide();
+}
+
+function displayNextTab( groupName )
+{
+    var selectedTabButton = getSelectedTabButton( "setup" );
+    var selectedTabId = selectedTabButton ? selectedTabButton.id : null;
+    var tabIds = getTabIds( groupName );
+    var nextTabId = tabIds[ ( selectedTabId ) ? ( tabIds.indexOf( selectedTabId ) + 1 ) % tabIds.length : 0 ];
+    $('button#' + nextTabId)[0].click();
 }
 
 function openTab( tabId )

@@ -231,6 +231,19 @@ html {
    margin-bottom: 1em;
 }
 
+.select {
+   font-family:   var(--normalFont);
+   border:        1px solid #ccc;
+
+   width:         100%;
+   padding:       1em 1.5em;
+   margin-bottom: 1em;
+}
+
+.label {
+   font-weight:   bold;
+}
+
 .logoImage {
    width:         8em;
    height:        8em;
