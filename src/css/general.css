@@ -233,6 +233,7 @@ html {
 
 .select {
    font-family:   var(--normalFont);
+   font-size:     inherit;
    border:        1px solid #ccc;
 
    width:         100%;
