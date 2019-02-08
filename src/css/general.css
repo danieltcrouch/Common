@@ -240,8 +240,8 @@ html {
    padding:       1em 1.5em;
    margin-bottom: 1em;
 
-   -webkit-appearance:  none;
-   -moz-appearance:     none;
+   /*-webkit-appearance:  none;*/
+   /*-moz-appearance:     none;*/
 }
 
 .label {

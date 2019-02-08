@@ -69,6 +69,12 @@ function getSelectedRadioButton( groupName )
     return result;
 }
 
+function getSelectedRadioButtonId( groupName )
+{
+    var result = getSelectedRadioButton( groupName );
+    return result ? result.id : null;
+}
+
 function setRadioCallback( groupName, callback )
 {
     $(document).on( "click", "button[name=" + groupName + "]", function(){callback( $(this).attr("id") );} );
@@ -122,9 +128,15 @@ function getSelectedTabButton( groupName )
     return result;
 }
 
+function getSelectedTabButtonId( groupName )
+{
+    var result = getSelectedTabButton( groupName );
+    return result ? result.id : null;
+}
+
 function setTabCallback( groupName, callback )
 {
-    $(document).on( "click", "button[name=" + groupName + "]", function(){callback( $(this).attr("id") );} );
+    $(document).on( "click", "button[name=" + groupName + "]", function(){callback( this.id );} );
 }
 
 function setTabCallbackToDisplay( groupName )
@@ -140,7 +152,7 @@ function setTabCallbackToDisplayByGroup( groupName )
 function getTabIds( groupName )
 {
     //Returns them in order of the Buttons
-    return  $('button[name=' + groupName + ']').map( function() { return $( this ).attr('id'); } ).get();
+    return  $('button[name=' + groupName + ']').map( function() { return this.id; } ).get();
 }
 
 function getTabs( groupName )
@@ -167,8 +179,7 @@ function hideAllTabs( groupName )
 
 function displayNextTab( groupName )
 {
-    var selectedTabButton = getSelectedTabButton( "setup" );
-    var selectedTabId = selectedTabButton ? selectedTabButton.id : null;
+    var selectedTabId = getSelectedTabButtonId( "setup" );
     var tabIds = getTabIds( groupName );
     var nextTabId = tabIds[ ( selectedTabId ) ? ( tabIds.indexOf( selectedTabId ) + 1 ) % tabIds.length : 0 ];
     $('button#' + nextTabId)[0].click();
