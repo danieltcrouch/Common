@@ -210,18 +210,18 @@ function closeModal( modal )
     modal.hide();
 }
 
-function setCloseHandlers( modal, close, submit, overwriteClose, leftButton, rightButton )
+function setCloseHandlers( modal, cancel, submit, normalCloseWithX, leftButton, rightButton )
 {
     var defaultClose = function() { closeModal( modal ) };
-    close = close || defaultClose;
-    submit = submit || close;
+    cancel = cancel || defaultClose;
+    submit = submit || cancel;
 
     leftButton = leftButton || modal.find('#submitButton');
     leftButton.off( "click" );
     leftButton.click( submit );
     rightButton = rightButton || modal.find('#cancelButton');
     rightButton.off( "click" );
-    rightButton.click( close );
+    rightButton.click( cancel );
 
     var prompt = modal.find('#prompt');
     if ( prompt && prompt.is( "input" ) )
@@ -234,8 +234,8 @@ function setCloseHandlers( modal, close, submit, overwriteClose, leftButton, rig
         });
     }
 
-    close = overwriteClose ? defaultClose : close;
-    modal.find('.close').off( "click" );
+    var close = normalCloseWithX ? defaultClose : cancel;
+    modal.find('.close').off( "click" ); //Close (X) Button
     modal.find('.close').click( close );
 
     $(window).off( "click" );
