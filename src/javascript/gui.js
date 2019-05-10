@@ -420,7 +420,7 @@ function showBigPrompt( headerText, message, callback, value, clearAfterward, st
         callback( value );
     }
 
-    setCloseHandlers( modal, close, submit );
+    setCloseHandlers( modal, close, submit, true );
     blurBackground();
 }
 
