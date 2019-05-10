@@ -411,7 +411,6 @@ function showBigPrompt( headerText, message, callback, value, clearAfterward, st
     function close()
     {
         clear();
-        callback();
     }
 
     function submit()
@@ -420,7 +419,7 @@ function showBigPrompt( headerText, message, callback, value, clearAfterward, st
         callback( value );
     }
 
-    setCloseHandlers( modal, close, submit, true );
+    setCloseHandlers( modal, close, submit );
     blurBackground();
 }
 
