@@ -159,7 +159,7 @@ html {
    background-color: var(--hoverColor);
 }
 
-.button, .fileButton {
+.button {
    font-family:      var(--titleFont);
    font-weight:      var(--titleWeight);
    font-size:        1.5em;
@@ -172,7 +172,7 @@ html {
    padding:          .5em;
 }
 
-.button:hover, .fileButton:hover {
+.button:hover {
    background-color: var(--hoverColor);
 }
 
@@ -246,11 +246,6 @@ html {
 
 .label {
    font-weight:   bold;
-}
-
-.logoImage {
-   width:         8em;
-   height:        8em;
 }
 
 /*** HTML TAGS ***/
