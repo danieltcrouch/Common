@@ -228,7 +228,7 @@ function setCloseHandlers( modal, cancel, submit, normalCloseWithX, leftButton, 
     {
         modal.find('#prompt').off( "keyup" );
         modal.find('#prompt').keyup( function(e) {
-            if ( e.keyCode === 13 ) {
+            if ( e.keyCode === 13 || e.which === 13 ) {
                 submit();
             }
         });
@@ -238,11 +238,10 @@ function setCloseHandlers( modal, cancel, submit, normalCloseWithX, leftButton, 
     modal.find('.close').off( "click" ); //Close (X) Button
     modal.find('.close').click( close );
 
-    $('.modal-background').off( "click" );
-    $('.modal-background').click(function(e) {
-        if ( e.target.id === modal.attr("id") ) {
+    $(window).off( "click" );
+    $(window).click(function(e) {
+        if ( e.target.parentNode.id === modal.attr("id") ) {
             close();
-            alert();
         }
     });
 }
@@ -283,8 +282,16 @@ function showConfirm( headerText, message, callback, style )
     submit.show();
     modal.show();
 
+    $('#focusInput').focus();
+    $(document).on( "keypress.modalNamespace", function(e){
+    	if ( e.keyCode === 13 || e.which === 13 ) {
+    		confirm();
+    	}
+    });
+
     function close( answer )
     {
+        $(document).off( "keypress.modalNamespace" );
         submit.hide();
         closeModal( modal );
         callback( answer === true );
