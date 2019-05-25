@@ -242,6 +242,7 @@ function setCloseHandlers( modal, cancel, submit, normalCloseWithX, leftButton, 
     $('.modal-background').click(function(e) {
         if ( e.target.id === modal.attr("id") ) {
             close();
+            alert();
         }
     });
 }
