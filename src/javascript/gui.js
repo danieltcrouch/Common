@@ -238,8 +238,8 @@ function setCloseHandlers( modal, cancel, submit, normalCloseWithX, leftButton, 
     modal.find('.close').off( "click" ); //Close (X) Button
     modal.find('.close').click( close );
 
-    $(window).off( "click" );
-    $(window).click(function(e) {
+    $('.modal-background').off( "click" );
+    $('.modal-background').click(function(e) {
         if ( e.target.id === modal.attr("id") ) {
             close();
         }
