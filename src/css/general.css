@@ -248,6 +248,19 @@ html {
    font-weight:   bold;
 }
 
+.icon {
+    width: 8em;
+    height: 8em;
+}
+
+.sub-icon {
+    width: 5.5em;
+    height: 5.5em;
+
+    margin-left: .5em;
+    margin-right: .5em;
+}
+
 /*** HTML TAGS ***/
 a {
     text-decoration: inherit;

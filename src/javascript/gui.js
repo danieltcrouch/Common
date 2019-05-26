@@ -282,7 +282,7 @@ function showConfirm( headerText, message, callback, style )
     submit.show();
     modal.show();
 
-    $('#focusInput').focus();
+    document.activeElement.blur();
     $(document).on( "keypress.modalNamespace", function(e){
     	if ( e.keyCode === 13 || e.which === 13 ) {
     		confirm();
