@@ -208,6 +208,24 @@ html {
 }
 
 .selectedButton:hover {
+   background-color: var(--mainColor);
+}
+
+.staticInverseButton {
+   border:           .1em solid var(--hoverColor);
+   color:            var(--hoverColor);
+   background-color: #ffffff;
+
+   cursor:           default;
+   pointer-events:   none; /* if it comes up that these elements need javascript events, a different solution to override the button:hover will be needed */
+}
+
+.staticSelectedButton {
+   border:           .1em solid var(--hoverColor);
+   background-color: var(--hoverColor);
+
+   cursor:           default;
+   pointer-events:   none; /* if it comes up that these elements need javascript events, a different solution to override the button:hover will be needed */
 }
 
 .clickable, .link {
