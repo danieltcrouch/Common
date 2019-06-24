@@ -12,7 +12,7 @@
 /*** META ***/
 :root {
    --mainColor:   #000000;
-   --hoverColor:  #333333;
+   --hoverColor:  #444444;
    --normalFont:  "Helvetica Neue","Helvetica","Arial", sans-serif;
    --titleFont:   "Helvetica Neue","Helvetica","Arial", sans-serif;
    --titleWeight: bold;
@@ -297,6 +297,25 @@ textarea {
    font-size: 16px;
 
    -webkit-appearance: none;
+}
+
+/*** ANIMATION ***/
+.blink {
+   animation: fadeIn 1s alternate infinite
+}
+
+.blinkBorder {
+   animation: fadeInBorder 1s alternate infinite
+}
+
+@keyframes fadeIn {
+   from {opacity: 0}
+   to {opacity: 1}
+}
+
+@keyframes fadeInBorder {
+   from {border-color: transparent}
+   to {border-color: initial}
 }
 
 /*** FONTS ***/
