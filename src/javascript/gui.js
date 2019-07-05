@@ -22,6 +22,54 @@ function scrollToId( id )
 }
 
 
+/******************SELECT******************/
+
+
+function getSelectedOption( elementId )
+{
+    let select = id( elementId );
+    let option = select.options[select.selectedIndex];
+    return {
+        index: select.selectedIndex,
+        text:  option.text,
+        value: option.value
+    };
+}
+
+function removeSelectOptions( elementId )
+{
+    let select = id( elementId );
+    const currentCount = select.options.length;
+    for ( let i = currentCount - 1; i >= 0; i-- ) {
+        select.remove( i );
+    }
+}
+
+function addToSelect( elementId, option )
+{
+    let select = id( elementId );
+    addToSelectElement( select, option );
+}
+
+function addToSelectElement( select, option )
+{
+    let optionElement = document.createElement("option");
+    optionElement.text = option.text || option;
+    optionElement.value = option.value || option;
+    select.add( optionElement );
+}
+
+function addAllToSelect( elementId, options )
+{
+    removeSelectOptions( elementId );
+    let select = id( elementId );
+    const optionsCount = options.length;
+    for ( let i = 0; i < optionsCount; i++ ) {
+        addToSelectElement( select, options[i] );
+    }
+}
+
+
 /******************RADIO******************/
 
 
