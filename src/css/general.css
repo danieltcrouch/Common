@@ -25,9 +25,7 @@
 [class*="col-"] {
    float: left;
    padding: .75em;
-}
-[class*="col-"] {
-    width: 100%;
+   width: 100%;
 }
 
 @media only screen and (min-width: 768px) {
@@ -43,21 +41,8 @@
    .col-8   {width: 80%;}
    .col-9   {width: 90%;}
    .col-10  {width: 100%;}
-}
 
-@media only screen and (min-width: 600px) {
-   .col-m-1   {width: 10%;}
-   .col-m-2   {width: 20%;}
-   .col-m-2h  {width: 25%;}
-   .col-m-3   {width: 30%;}
-   .col-m-3r  {width: 33.3%;}
-   .col-m-4   {width: 40%;}
-   .col-m-5   {width: 50%;}
-   .col-m-6   {width: 60%;}
-   .col-m-7   {width: 70%;}
-   .col-m-8   {width: 80%;}
-   .col-m-9   {width: 90%;}
-   .col-m-10  {width: 100%;}
+   .mobileDisplay {display: none;}
 }
 
 .row::after {
@@ -228,6 +213,10 @@ html {
    pointer-events:   none; /* if it comes up that these elements need javascript events, a different solution to override the button:hover will be needed */
 }
 
+.helpIcon {
+   width:   .5em;
+}
+
 .clickable, .link {
    cursor:           pointer;
 }
@@ -301,11 +290,11 @@ textarea {
 
 /*** ANIMATION ***/
 .blink {
-   animation: fadeIn 1s alternate infinite
+   animation: fadeIn 1s ease-in alternate infinite
 }
 
 .blinkBorder {
-   animation: fadeInBorder 1s alternate infinite
+   animation: fadeInBorder 1s ease-in alternate infinite
 }
 
 @keyframes fadeIn {
