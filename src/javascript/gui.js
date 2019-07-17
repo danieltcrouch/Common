@@ -1,4 +1,4 @@
-$(document).on( "click", ".title .clickable", showInstructions );
+$(document).on( "click", "#helpIcon", showInstructions );
 $(document).on( "click", ".inverseButton", selectRadioButton );
 $(document).on( "click", ".inverseTab", selectTabButton );
 
@@ -8,7 +8,7 @@ $(document).on( "click", ".inverseTab", selectTabButton );
 
 function showInstructions( e )
 {
-    showMessage( "Instructions", $('#instructions').html() );
+    showMessage( "Instructions", $('#helpText').html() );
 }
 
 function scrollToId( id )
