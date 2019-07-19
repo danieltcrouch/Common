@@ -27,13 +27,18 @@ function scrollToId( id )
 
 function getSelectedOption( elementId )
 {
+    let result = null;
     let select = id( elementId );
-    let option = select.options[select.selectedIndex];
-    return {
-        index: select.selectedIndex,
-        text:  option.text,
-        value: option.value
-    };
+    if ( select.selectedIndex >= 0 )
+    {
+        let option = select.options[select.selectedIndex];
+        result = {
+            index: select.selectedIndex,
+            text:  option.text,
+            value: option.value
+        };
+    }
+    return result;
 }
 
 function removeSelectOptions( elementId )
