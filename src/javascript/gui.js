@@ -41,6 +41,12 @@ function getSelectedOption( elementId )
     return result;
 }
 
+function getSelectedOptionValue( elementId )
+{
+    let selectOption = getSelectedOption( elementId );
+    return ( selectOption && selectOption.value ) ? selectOption.value : null;
+}
+
 function removeSelectOptions( elementId )
 {
     let select = id( elementId );
