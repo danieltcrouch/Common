@@ -84,6 +84,11 @@ function addAllToSelect( elementId, options )
 /******************RADIO******************/
 
 
+function chooseRadioButton( buttonId )
+{
+    id(buttonId).click();
+}
+
 function selectRadioButton( e )
 {
 	var clickedButton = e.target;
@@ -100,6 +105,28 @@ function selectRadioButton( e )
             button.classList.add( "inverseButton" );
             button.classList.remove( "selectedButton" );
         }
+    });
+}
+
+function unfreezeRadioButtons( groupName, buttonIds )
+{
+    freezeRadioButtons( groupName, buttonIds, false )
+}
+
+function freezeRadioButtons( groupName, buttonIds, makeStatic = true )
+{
+    var allButtons = ( groupName ) ? $('button[name=' + groupName + ']').toArray() :
+                     ( buttonIds ) ? buttonIds.map( buttonId => id( buttonId ) ) : [];
+    allButtons.forEach( function( button ) {
+        const isSelected = button.classList.contains( "selectedButton" ) || button.classList.contains( "staticSelectedButton" );
+        button.classList.remove( "selectedButton" );
+        button.classList.remove( "inverseButton" );
+        button.classList.remove( "staticSelectedButton" );
+        button.classList.remove( "staticInverseButton" );
+        var classToAdd = makeStatic ?
+            (isSelected ? "staticSelectedButton" : "staticInverseButton") :
+            (isSelected ? "selectedButton" : "inverseButton");
+        button.classList.add( classToAdd );
     });
 }
 
@@ -120,7 +147,8 @@ function getSelectedRadioButton( groupName )
     var result = null;
 	var allButtons = $('button[name=' + groupName + ']').toArray();
     allButtons.forEach( function( button ) {
-        if ( button.classList.contains( "selectedButton" ) )
+        if ( button.classList.contains( "selectedButton" ) ||
+             button.classList.contains( "staticSelectedButton" ) )
         {
             result = button;
         }
