@@ -1,5 +1,5 @@
 $(document).on( "click", "#helpIcon", showInstructions );
-$(document).on( "click", ".inverseButton", selectRadioButton );
+$(document).on( "click", ".inverseButton", clickRadioButton );
 $(document).on( "click", ".inverseTab", selectTabButton );
 
 
@@ -84,36 +84,64 @@ function addAllToSelect( elementId, options )
 /******************RADIO******************/
 
 
-function chooseRadioButton( buttonId )
+function clickRadioButton( e )
 {
-    id(buttonId).click();
+    updateRadioButtonGroup( e.target.id );
 }
 
-function selectRadioButton( e )
+function updateRadioButtonGroup( buttonId )
 {
-	var clickedButton = e.target;
-	var groupName = clickedButton.attributes["name"].value;
-	var allButtons = $('button[name=' + groupName + ']').toArray();
+	var clickedButton = id(buttonId);
+	var groupName = clickedButton.name;
+	var allButtons = nm(groupName);
     allButtons.forEach( function( button ) {
         if ( button.id === clickedButton.id )
         {
-            button.classList.add( "selectedButton" );
-            button.classList.remove( "inverseButton" );
+            selectRadioButton( button.id );
         }
         else
         {
-            button.classList.add( "inverseButton" );
-            button.classList.remove( "selectedButton" );
+            deselectRadioButton( button.id );
         }
     });
 }
 
-function unfreezeRadioButtons( groupName, buttonIds )
+function selectRadioButton( buttonId, frozen = false )
 {
-    freezeRadioButtons( groupName, buttonIds, false )
+    removeSelectButtonClasses( buttonId );
+    id(buttonId).classList.add( getSelectButtonClass( true, frozen ) );
 }
 
-function freezeRadioButtons( groupName, buttonIds, makeStatic = true )
+function deselectRadioButton( buttonId, frozen = false )
+{
+    removeSelectButtonClasses( buttonId );
+    id(buttonId).classList.add( getSelectButtonClass( false, frozen ) );
+}
+
+function toggleRadioButton( buttonId, frozen = false )
+{
+    let button = id(buttonId);
+    const isSelected = button.classList.contains( "selectedButton" ) || button.classList.contains( "staticSelectedButton" );
+    removeSelectButtonClasses( buttonId );
+    button.classList.add( getSelectButtonClass( !isSelected, frozen ) );
+}
+
+function removeSelectButtonClasses( buttonId )
+{
+    id(buttonId).classList.remove( "selectedButton" );
+    id(buttonId).classList.remove( "inverseButton" );
+    id(buttonId).classList.remove( "staticSelectedButton" );
+    id(buttonId).classList.remove( "staticInverseButton" );
+}
+
+function getSelectButtonClass( isSelected, isFrozen )
+{
+    return isFrozen ?
+        (isSelected ? "staticSelectedButton" : "staticInverseButton") :
+        (isSelected ? "selectedButton"       : "inverseButton");
+}
+
+function unfreezeRadioButtons( groupName, buttonIds )
 {
     var allButtons = ( groupName ) ? $('button[name=' + groupName + ']').toArray() :
                      ( buttonIds ) ? buttonIds.map( buttonId => id( buttonId ) ) : [];
@@ -123,9 +151,22 @@ function freezeRadioButtons( groupName, buttonIds, makeStatic = true )
         button.classList.remove( "inverseButton" );
         button.classList.remove( "staticSelectedButton" );
         button.classList.remove( "staticInverseButton" );
-        var classToAdd = makeStatic ?
-            (isSelected ? "staticSelectedButton" : "staticInverseButton") :
-            (isSelected ? "selectedButton" : "inverseButton");
+        var classToAdd = isSelected ? "selectedButton" : "inverseButton";
+        button.classList.add( classToAdd );
+    });
+}
+
+function freezeRadioButtons( groupName, buttonIds )
+{
+    var allButtons = ( groupName ) ? $('button[name=' + groupName + ']').toArray() :
+                     ( buttonIds ) ? buttonIds.map( buttonId => id( buttonId ) ) : [];
+    allButtons.forEach( function( button ) {
+        const isSelected = button.classList.contains( "selectedButton" ) || button.classList.contains( "staticSelectedButton" );
+        button.classList.remove( "selectedButton" );
+        button.classList.remove( "inverseButton" );
+        button.classList.remove( "staticSelectedButton" );
+        button.classList.remove( "staticInverseButton" );
+        var classToAdd = isSelected ? "staticSelectedButton" : "staticInverseButton";
         button.classList.add( classToAdd );
     });
 }
