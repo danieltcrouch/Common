@@ -29,5 +29,6 @@
 <link rel="stylesheet" type="text/css" href="https://religionandstory.com/common/css/general.css"/>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<script src="https://religionandstory.com/common/javascript/gui.js"></script>
 <script src="https://religionandstory.com/common/javascript/utility.js"></script>
+<script src="https://religionandstory.com/common/javascript/gui.js"></script>
+<script src="https://religionandstory.com/common/javascript/date.js"></script>

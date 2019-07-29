@@ -8,6 +8,13 @@ const MINUTES = 60;
 const HOURS = 24;
 const DAYS_IN_WEEK = 7;
 
+function newDateFromUTC( value ) {
+    //fixes date when local timezone is assumed
+    let result = value ? new Date( value ) : null;
+    result = adjustMinutes( result, -result.getTimezoneOffset() );
+    return result;
+}
+
 function getDateOrNull( value ) {
     return value ? new Date( value ) : null;
 }
