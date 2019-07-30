@@ -10,8 +10,11 @@ const DAYS_IN_WEEK = 7;
 
 function newDateFromUTC( value ) {
     //fixes date when local timezone is assumed
-    let result = value ? new Date( value ) : null;
-    result = adjustMinutes( result, -result.getTimezoneOffset() );
+    let result = null;
+    if ( value  ) {
+        result = new Date( value );
+        result = adjustMinutes( result, -result.getTimezoneOffset() );
+    }
     return result;
 }
 
@@ -139,6 +142,7 @@ function isDateInSpan( date, yearAdjust, monthAdjust, dayAdjust, hourAdjust, min
 
 function getZonedTime( date ) {
     //accounts for Timezone
+    //needed since Javascript stores Time as UTC
     let result = null;
     if ( date ) {
         date = new Date( date - date.getTimezoneOffset() * TIMEZONE_OFFSET );
@@ -147,12 +151,8 @@ function getZonedTime( date ) {
     return result;
 }
 
-function convertToUTC( date ) {
-    const convertedString = date.toISOString();
-    return new Date( convertedString );
-}
-
-function convertToCST( date ) {
-    const convertedString = date.toLocaleString( "en-US", {timeZone: "America/Chicago"} );
-    return new Date( convertedString );
+function adjustToUTC( date ) {
+    //converts to date <emphasis>as if</emphasis> UTC
+    //a date in CST of 01/28/1993 00:00 is changed to 01/28/1993 06:00 (its equivalent in UTC) though the timezone of CST is maintained
+    return adjustMinutes( date, date.getTimezoneOffset() );
 }
