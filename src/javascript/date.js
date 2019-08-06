@@ -87,12 +87,20 @@ function isDateEqual( date1, date2, compareExact = false ) {
     return date1 === date2;
 }
 
+function isDateBeforeOrEqual( date, centerDate, compareExact = false ) {
+    return isDateBefore( date, centerDate, compareExact ) || isDateEqual( date, centerDate, compareExact );
+}
+
 function isDateBefore( date, centerDate, compareExact = false ) {
     if ( compareExact ) {
         date = date.getTime();
         centerDate = centerDate.getTime();
     }
     return date < centerDate;
+}
+
+function isDateAfterOrEqual( date, centerDate, compareExact = false ) {
+    return isDateAfter( date, centerDate, compareExact ) || isDateEqual( date, centerDate, compareExact );
 }
 
 function isDateAfter( date, centerDate, compareExact = false ) {
@@ -139,6 +147,9 @@ function isDateInSpan( date, yearAdjust, monthAdjust, dayAdjust, hourAdjust, min
     result = (!result && inclusive) ? isDateEqual( date, compareDate, compareExact ) : result;
     return result;
 }
+
+//todo - clean-up all the comparison and inRange functions
+//todo - make all methods null safe?
 
 function getZonedTime( date ) {
     //accounts for Timezone
