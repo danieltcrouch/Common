@@ -11,7 +11,7 @@ const DAYS_IN_WEEK = 7;
 function newDateFromUTC( value ) {
     //fixes date when local timezone is assumed
     let result = null;
-    if ( value  ) {
+    if ( value ) {
         result = new Date( value );
         result = adjustMinutes( result, -result.getTimezoneOffset() );
     }
@@ -23,66 +23,86 @@ function getDateOrNull( value ) {
 }
 
 function adjustMinutes( date, minuteDifference ) {
-    date.setMinutes( date.getMinutes() + minuteDifference );
+    if ( date ) {
+        date.setMinutes( date.getMinutes() + minuteDifference );
+    }
     return date;
 }
 
 function adjustHours( date, hourDifference ) {
-    date.setHours( date.getHours() + hourDifference );
+    if ( date ) {
+        date.setHours( date.getHours() + hourDifference );
+    }
     return date;
 }
 
 function adjustDays( date, dayDifference ) {
-    date.setDate( date.getDate() + dayDifference );
+    if ( date ) {
+        date.setDate( date.getDate() + dayDifference );
+    }
     return date;
 }
 
 function adjustDayOfWeek( date, dayIndex, excludeToday = true, backward = false ) {
-    const daysInWeekDirectional = backward ? -DAYS_IN_WEEK : DAYS_IN_WEEK;
-    let dayDifference = ( dayIndex - date.getDay() + daysInWeekDirectional ) % DAYS_IN_WEEK;
-    dayDifference += (excludeToday && dayIndex === date.getDay()) ? daysInWeekDirectional : 0;
-    date.setDate( date.getDate() + dayDifference );
+    if ( date ) {
+        const daysInWeekDirectional = backward ? -DAYS_IN_WEEK : DAYS_IN_WEEK;
+        let dayDifference = ( dayIndex - date.getDay() + daysInWeekDirectional ) % DAYS_IN_WEEK;
+        dayDifference += (excludeToday && dayIndex === date.getDay()) ? daysInWeekDirectional : 0;
+        date.setDate( date.getDate() + dayDifference );
+    }
     return date;
 }
 
 function adjustMonths( date, monthDifference ) {
-    date.setMonth( date.getMonth() + monthDifference );
+    if ( date ) {
+        date.setMonth( date.getMonth() + monthDifference );
+    }
     return date;
 }
 
 function adjustYears( date, yearDifference ) {
-    date.setFullYear( date.getFullYear() + yearDifference );
+    if ( date ) {
+        date.setFullYear( date.getFullYear() + yearDifference );
+    }
     return date;
 }
 
 function setToAlmostMidnight( date ) {
-    date.setHours( 23, 59, 59, 0 );
+    if ( date ) {
+        date.setHours( 23, 59, 59, 0 );
+    }
     return date;
 }
 
 function zeroTime( date ) {
-    date.setHours(0,0,0,0);
+    if ( date ) {
+        date.setHours(0,0,0,0);
+    }
     return date;
 }
 
 function zeroMinutesAndBelow( date ) {
-    date.setMinutes(0,0,0);
+    if ( date ) {
+        date.setMinutes(0,0,0);
+    }
     return date;
 }
 
 function zeroSecondsAndBelow( date ) {
-    date.setSeconds(0,0);
+    if ( date ) {
+        date.setSeconds(0,0);
+    }
     return date;
 }
 
 function isDateEqual( date1, date2, compareExact = false ) {
     if ( compareExact ) {
-        date1 = date1.getTime();
-        date2 = date2.getTime();
+        date1 = date1 ? date1.getTime() : null;
+        date2 = date2 ? date2.getTime() : null;
     }
     else {
-        date1 = date1.toLocaleDateString();
-        date2 = date2.toLocaleDateString();
+        date1 = date1 ? date1.toLocaleDateString() : null;
+        date2 = date2 ? date2.toLocaleDateString() : null;
     }
     return date1 === date2;
 }
@@ -93,8 +113,8 @@ function isDateBeforeOrEqual( date, centerDate, compareExact = false ) {
 
 function isDateBefore( date, centerDate, compareExact = false ) {
     if ( compareExact ) {
-        date = date.getTime();
-        centerDate = centerDate.getTime();
+        date = date ? date.getTime() : null;
+        centerDate = centerDate ? centerDate.getTime() : null;
     }
     return date < centerDate;
 }
@@ -105,8 +125,8 @@ function isDateAfterOrEqual( date, centerDate, compareExact = false ) {
 
 function isDateAfter( date, centerDate, compareExact = false ) {
     if ( compareExact ) {
-        date = date.getTime();
-        centerDate = centerDate.getTime();
+        date = date ? date.getTime() : null;
+        centerDate = centerDate ? centerDate.getTime() : null;
     }
     return date > centerDate;
 }
@@ -148,9 +168,6 @@ function isDateInSpan( date, yearAdjust, monthAdjust, dayAdjust, hourAdjust, min
     return result;
 }
 
-//todo - clean-up all the comparison and inRange functions
-//todo - make all methods null safe?
-
 function getZonedTime( date ) {
     //accounts for Timezone
     //needed since Javascript stores Time as UTC
@@ -167,3 +184,5 @@ function adjustToUTC( date ) {
     //a date in CST of 01/28/1993 00:00 is changed to 01/28/1993 06:00 (its equivalent in UTC) though the timezone of CST is maintained
     return adjustMinutes( date, date.getTimezoneOffset() );
 }
+
+//todo - clean-up all the comparison and inRange functions
