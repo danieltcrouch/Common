@@ -346,10 +346,20 @@ function blurBackground()
     $('body').addClass( "blur" );
 }
 
+function closeModalJS( modalId )
+{
+    closeModal( $('#' + modalId) );
+}
+
 function closeModal( modal )
 {
     $('body').removeClass( "blur" );
     modal.hide();
+}
+
+function setCloseHandlersJS( modalId, cancel, submit, normalCloseWithX, leftButton, rightButton )
+{
+    setCloseHandlers( $('#' + modalId), cancel, submit, normalCloseWithX, leftButton, rightButton );
 }
 
 function setCloseHandlers( modal, cancel, submit, normalCloseWithX, leftButton, rightButton )
