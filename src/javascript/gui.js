@@ -25,6 +25,20 @@ function scrollToId( id )
 /******************SELECT******************/
 
 
+function chooseSelectOptionValue( elementId, value )
+{
+    if ( value ) {
+        id( elementId ).value = value;
+    }
+}
+
+function chooseSelectOptionIndex( elementId, index )
+{
+    if ( index ) {
+        id( elementId ).selectedIndex = index;
+    }
+}
+
 function getSelectedOption( elementId )
 {
     let result = null;

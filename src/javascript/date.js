@@ -182,7 +182,7 @@ function getZonedTime( date ) {
 function adjustToUTC( date ) {
     //converts to date <emphasis>as if</emphasis> UTC
     //a date in CST of 01/28/1993 00:00 is changed to 01/28/1993 06:00 (its equivalent in UTC) though the timezone of CST is maintained
-    return adjustMinutes( date, date.getTimezoneOffset() );
+    return date ? adjustMinutes( date, date.getTimezoneOffset() ) : null;
 }
 
 //todo - clean-up all the comparison and inRange functions
