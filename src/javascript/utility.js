@@ -3,11 +3,11 @@ function id( idName ) {
 }
 
 function cl( className ) {
-    return document.getElementsByClassName( className );
+    return Array.from( document.getElementsByClassName( className ) );
 }
 
 function nm( nameName ) {
-    return document.getElementsByName( nameName );
+    return Array.from( document.getElementsByName( nameName ) );
 }
 
 
