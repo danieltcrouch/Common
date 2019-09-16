@@ -1,26 +1,105 @@
 const DAYS_OF_WEEK = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
 const TIMEZONE_OFFSET = 60000;
 
-const MILLISECONDS = 1000;
-const SECONDS = 60;
-const MINUTES = 60;
-const HOURS = 24;
+const MILLISECONDS_IN_SECOND = 1000;
+const SECONDS_IN_MINUTE = 60;
+const MINUTES_IN_HOUR = 60;
+const HOURS_IN_DAY = 24;
 const DAYS_IN_WEEK = 7;
 
-function newDateFromUTC( value ) {
-    //fixes date when local timezone is assumed
+
+/*** BASIC ***/
+
+
+function newDate( value, allowDatabaseConversion = true ) {
     let result = null;
     if ( value ) {
         result = new Date( value );
-        result = adjustMinutes( result, -result.getTimezoneOffset() );
+        let isDatabaseTimestamp = result.toISOString() !== value;
+        if ( allowDatabaseConversion && isDatabaseTimestamp ) {
+            result = adjustToUTC( result );
+        }
     }
     return result;
 }
 
-function getDateOrNull( value ) {
-    return value ? new Date( value ) : null;
+function adjustToUTC( date ) {
+    //Useful when new Date() has incorrectly offset date assuming original value was not UTC
+    return adjustMinutes( date, -date.getTimezoneOffset() );
 }
+
+
+/*** DISPLAY ***/
+
+
+function getDisplayTime( date ) {
+    let result = "";
+
+    if ( date ) {
+        const now = new Date();
+        if ( isDateEqual( date, now ) ) {
+            result = "Today, " + date.toLocaleTimeString( "en-US", { hour: '2-digit', minute: '2-digit' } );
+        }
+        else {
+            const withinWeek = isDateInNext( date, null, null, 7,    null, null, true, false );
+            const withinYear = isDateInNext( date, 1,    null, null, null, null, true, false );
+            const options = { weekday: withinWeek ? 'long' : undefined, year: withinYear ? undefined : 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+            result = date.toLocaleString( "en-US", options );
+        }
+    }
+
+    return result;
+}
+
+
+/*** SPECIAL ***/
+
+
+function setToAlmostMidnight( date ) {
+    if ( date ) {
+        date.setHours( 23, 59, 59, 0 );
+    }
+    return date;
+}
+
+function zeroTime( date ) {
+    if ( date ) {
+        date.setHours(0,0,0,0);
+    }
+    return date;
+}
+
+function zeroMinutesAndBelow( date ) {
+    if ( date ) {
+        date.setMinutes(0,0,0);
+    }
+    return date;
+}
+
+function zeroSecondsAndBelow( date ) {
+    if ( date ) {
+        date.setSeconds(0,0);
+    }
+    return date;
+}
+
+
+/*** CALCULATE ***/
+
+
+function getMonthIndex( monthName ) {
+    return MONTHS.findIndex( m => m.includes( monthName ) );
+}
+
+function getDaysInMonth( month, year ) {
+    return 32 - new Date(year, month, 32).getDate();
+}
+
+
+/*** ADJUST ***/
+
 
 function adjustMinutes( date, minuteDifference ) {
     if ( date ) {
@@ -67,33 +146,9 @@ function adjustYears( date, yearDifference ) {
     return date;
 }
 
-function setToAlmostMidnight( date ) {
-    if ( date ) {
-        date.setHours( 23, 59, 59, 0 );
-    }
-    return date;
-}
 
-function zeroTime( date ) {
-    if ( date ) {
-        date.setHours(0,0,0,0);
-    }
-    return date;
-}
+/*** COMPARISON ***/
 
-function zeroMinutesAndBelow( date ) {
-    if ( date ) {
-        date.setMinutes(0,0,0);
-    }
-    return date;
-}
-
-function zeroSecondsAndBelow( date ) {
-    if ( date ) {
-        date.setSeconds(0,0);
-    }
-    return date;
-}
 
 function isDateEqual( date1, date2, compareExact = false ) {
     if ( compareExact ) {
@@ -131,20 +186,24 @@ function isDateAfter( date, centerDate, compareExact = false ) {
     return date > centerDate;
 }
 
-function isDateInRange( date, earlyDate, lateDate, inclusive = false ) {
-    let result = isDateAfter( date, earlyDate) && isDateBefore( date, lateDate );
+
+/*** RANGE COMPARISON ***/
+
+
+function isDateInRange( date, earlyDate, lateDate, inclusive = false, compareExact = true ) {
+    let result = isDateAfter( date, earlyDate, compareExact ) && isDateBefore( date, lateDate, compareExact );
     if ( !result && inclusive ) {
-        result = isDateEqual( date, earlyDate ) || isDateEqual( date, lateDate );
+        result = isDateEqual( date, earlyDate, compareExact ) || isDateEqual( date, lateDate, compareExact );
     }
     return result;
 }
 
 function isDateInNextHours( date, hourAdjust ) {
-    return isDateInSpan( date, null, null, null, hourAdjust, null );
+    return isDateInNext( date, null, null, null, hourAdjust, null );
 }
 
 function isDateInNextDays( date, dayAdjust ) {
-    return isDateInSpan( date, null, null, dayAdjust, null, null, true, false );
+    return isDateInNext( date, null, null, dayAdjust, null, null, true, false );
 }
 
 function isDateInNext( date, yearAdjust, monthAdjust, dayAdjust, hourAdjust, minuteAdjust, inclusive = false, compareExact = true ) {
@@ -163,26 +222,7 @@ function isDateInSpan( date, yearAdjust, monthAdjust, dayAdjust, hourAdjust, min
     adjustHours( compareDate, hourAdjust );
     adjustMinutes( compareDate, minuteAdjust );
 
-    let result = next ? isDateBefore( date, compareDate, compareExact ) : isDateAfter( date, compareDate, compareExact );
-    result = (!result && inclusive) ? isDateEqual( date, compareDate, compareExact ) : result;
-    return result;
+    let earlyDate = next ? new Date()  : compareDate;
+    let lateDate  = next ? compareDate : new Date();
+    return isDateInRange( date, earlyDate, lateDate, inclusive, compareExact );
 }
-
-function getZonedTime( date ) {
-    //accounts for Timezone
-    //needed since Javascript stores Time as UTC
-    let result = null;
-    if ( date ) {
-        date = new Date( date - date.getTimezoneOffset() * TIMEZONE_OFFSET );
-        result = date.getTime();
-    }
-    return result;
-}
-
-function adjustToUTC( date ) {
-    //converts to date <emphasis>as if</emphasis> UTC
-    //a date in CST of 01/28/1993 00:00 is changed to 01/28/1993 06:00 (its equivalent in UTC) though the timezone of CST is maintained
-    return date ? adjustMinutes( date, date.getTimezoneOffset() ) : null;
-}
-
-//todo - clean-up all the comparison and inRange functions

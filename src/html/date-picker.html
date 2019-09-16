@@ -1,0 +1,454 @@
+<link rel="stylesheet" type="text/css" href="https://religionandstory.com/common/css/modal.css"/>
+
+<script>
+//Must be used in conjunction with date.js
+/*** CUSTOM TAG: <date-picker></date-picker> ***/
+
+
+const DATE_PICKER_DEFAULT = "No Selected Date/Time";
+
+window.onload = function() {
+    window.customElements.define( "date-picker", DatePicker );
+};
+
+class DatePicker extends HTMLElement {
+    constructor() {
+        super();
+
+        let datePickerTemplate = document.getElementById( "datePickerTemplate" );
+        this.appendChild( datePickerTemplate.content.cloneNode( true ) );
+        //todo 12 - use this but not right now because I have no idea how it and slots work
+        //let shadowRoot = this.attachShadow( {mode: "open"} );
+        //shadowRoot.appendChild( datePickerTemplate.content.cloneNode(true) );
+    }
+
+    static get observedAttributes() {
+        return ["date", "value", "type", "disabled"];
+    }
+
+    connectedCallback() {
+        if ( !this.hasAttribute( "date" ) ) {
+            let display = document.getElementById( "datePickerDisplay" );
+            display.style.fontStyle = "italic";
+            display.innerText = DATE_PICKER_DEFAULT;
+        }
+        if ( !this.hasAttribute( "type" ) ) {
+            this.type = "both";
+        }
+        if ( !this.hasAttribute( "tabindex" ) ) {
+            this.tabindex = "0";
+        }
+
+        this.upgradeProperty( "date" );
+        this.upgradeProperty( "value" );
+        this.upgradeProperty( "type" );
+        this.upgradeProperty( "disabled" );
+
+        this.addEventListener( "click", this.onClick );
+    }
+
+    disconnectedCallback() {
+        this.removeEventListener( "click", this.onClick );
+    }
+
+    attributeChangedCallback( attributeName, oldValue, newValue ) {
+        const hasValue = newValue !== null;
+        switch (attributeName) {
+            case "value":
+                let display = this.querySelector( "#datePickerDisplay" );
+                display.innerText = hasValue ? getDisplayTime( this.getDateObject() ) : DATE_PICKER_DEFAULT;
+                break;
+            case "type":
+                break;
+            case "disabled":
+                if ( hasValue ) {
+                    this.removeAttribute( "tabindex" );
+                    this.blur();
+                }
+                else {
+                    this.setAttribute( "tabindex", "0" );
+                }
+                break;
+        }
+    }
+
+    upgradeProperty( property ) {
+        if ( this.hasOwnProperty( property ) || this.hasAttribute( property ) ) {
+            let value = this[property];
+            delete this[property];
+            this[property] = value;
+        }
+    }
+
+    onClick( event ) {
+        launchDatePickerModal( this );
+    }
+
+    getDateObject() {
+        return newDate( this.value );
+    }
+
+    setDateObject( date ) {
+        this.value = date.toISOString();
+    }
+
+    get value() {
+        return this.getAttribute( "value" );
+    }
+
+    set value( value ) {
+        if ( value ) {
+
+            this.setAttribute( "value", value );
+        }
+        else {
+            this.removeAttribute( "value" );
+        }
+    }
+
+    get type() {
+        return this.getAttribute( "type" );
+    }
+
+    set type( value ) {
+        if ( value ) {
+            this.setAttribute( "type", value );
+        }
+        else {
+            this.removeAttribute( "type" );
+        }
+    }
+
+    get disabled() {
+        return this.hasAttribute( "disabled" );
+    }
+
+    set disabled( value ) {
+        if ( value ) {
+            this.setAttribute( "disabled", "" );
+        }
+        else {
+            this.removeAttribute( "disabled" );
+        }
+    }
+}
+
+
+/*** MODAL ***/
+
+
+function launchDatePickerModal( datePicker ) {
+    let modal = document.getElementById( "datePickerModal" );
+    let modalBody = modal.querySelector( "#modalBody" );
+    let calendar = modalBody.querySelector( "#calendar" );
+
+    setInternalDate( datePicker.getDateObject() );
+    generateDatePicker( modalBody, calendar, getInternalDate() || new Date() );
+
+    modal.style.display = "block";
+    document.getElementsByTagName( "body" )[0].classList.add( "blur" );
+
+    function close()
+    {
+        document.getElementsByTagName( "body" )[0].classList.remove( "blur" );
+        modal.style.display = "none";
+        calendar.innerHTML = "";
+    }
+
+    function confirm()
+    {
+        datePicker.setDateObject( getInternalDate() );
+        close();
+    }
+
+    setCloseHandlersJS( "datePickerModal", close, confirm );
+    blurBackground();
+}
+
+function generateDatePicker( modalBody, calendar, displayDate ) {
+    generateCalendar( modalBody, calendar, displayDate );
+
+    let options = [];
+    const COUNT_EITHER_SIDE = 10;
+    const baseYear = displayDate.getFullYear() - COUNT_EITHER_SIDE;
+    for ( let i = 0; i < COUNT_EITHER_SIDE * 2 + 1; i++ ) {
+        options.push( "" + (baseYear + i) );
+    }
+    addAllToSelect( "yearTitleSelect", options );
+    chooseSelectOptionValue( "yearTitleSelect", displayDate.getFullYear() );
+
+    addAllToSelect( "monthTitleSelect", MONTHS );
+    chooseSelectOptionIndex( "monthTitleSelect", displayDate.getMonth() );
+
+    options = [];
+    for ( let i = 0; i < HOURS_IN_DAY; i++ ) {
+        options.push( "" + i );
+    }
+    addAllToSelect( "hourSelect", options );
+    chooseSelectOptionValue( "hourSelect", displayDate.getHours() );
+
+    options = [];
+    for ( let i = 0; i < MINUTES_IN_HOUR; i++ ) {
+        options.push( "" + i );
+    }
+    addAllToSelect( "minuteSelect", options );
+    chooseSelectOptionValue( "minuteSelect", displayDate.getMinutes() );
+}
+
+function generateCalendar( modalBody, calendar, displayDate ) {
+    let tableHead = document.createElement("thead");
+    let row = document.createElement("tr");
+    for ( let i = 0; i < DAYS_OF_WEEK.length; i++ ) {
+        let cell = document.createElement("th");
+        cell.innerText = DAYS_OF_WEEK[i].substring( 0, 3 );
+        row.appendChild( cell );
+    }
+    tableHead.appendChild( row );
+    calendar.appendChild( tableHead );
+
+    let date = 1;
+    const month = displayDate.getMonth();
+    const year = displayDate.getFullYear();
+    let firstDayOfWeekIndex = new Date( year, month ).getDay();
+    const internalDate = getInternalDate();
+
+    let tableBody = document.createElement("tbody");
+    const MAX_WEEKS_IN_MONTH = 6;
+    for ( let i = 0; i < MAX_WEEKS_IN_MONTH; i++ ) {
+        row = document.createElement("tr");
+        for ( let j = 0; j < DAYS_IN_WEEK; j++ ) {
+            let cell = null;
+            if ( i === 0 && j < firstDayOfWeekIndex ) {
+                cell = document.createElement("td");
+                cell.innerText = "";
+                row.appendChild(cell);
+            }
+            else if ( date <= getDaysInMonth( month, year ) ) {
+                cell = document.createElement("td");
+                const today = new Date();
+                if ( date === today.getDate() && month === today.getMonth() && year === today.getFullYear() ) {
+                   cell.classList.add( "todayDate" );
+                }
+                if ( internalDate && date === internalDate.getDate() && month === internalDate.getMonth() && year === internalDate.getFullYear() ) {
+                   cell.classList.add( "selectedDate" );
+                }
+                cell.addEventListener( "click", selectDayEvent );
+                cell.innerText = "" + date;
+                row.appendChild(cell);
+                date++;
+            }
+            else {
+                break;
+            }
+        }
+        tableBody.appendChild( row );
+    }
+    calendar.appendChild( tableBody );
+
+    modalBody.querySelector( "#monthTitle" ).innerText = MONTHS[month];
+    modalBody.querySelector( "#yearTitle" ).innerText  = year;
+}
+
+function selectDayEvent( event ) {
+    let cell = event.target;
+    cell.style.backgroundColor = "";
+    let calendarCells = document.getElementById( "calendar" );
+    for ( let i = 0; i < calendarCells.rows.length; i++ ) {
+        let row = calendarCells.rows[i];
+        for ( let j = 0; j < row.cells.length; j++ ) {
+            row.cells[j].classList.remove( "selectedDate" );
+        }
+    }
+    cell.classList.add( "selectedDate" );
+
+    selectDay( cell.innerText );
+}
+
+function changeMonth( direction ) {
+    const toBeDate = ( adjustMonths( getDisplayDate(), ( direction === "next" ) ? 1 : -1 ) );
+    document.getElementById( "datePickerModal" ).querySelector( "#monthTitle" ).innerText = MONTHS[ toBeDate.getMonth() ];
+    jump();
+}
+
+function showSelect( type, reverse = false ) {
+    let span   = document.getElementById( "datePickerModal" ).querySelector( "#" + type + "Title" );
+    let select = document.getElementById( "datePickerModal" ).querySelector( "#" + type + "TitleSelect" );
+    span.style.display = reverse ? "" : "none";
+    select.style.display = reverse ? "none" : "";
+}
+
+function updateYear() {
+    document.getElementById( "datePickerModal" ).querySelector( "#yearTitle" ).innerText = getSelectedOptionValue( "yearTitleSelect" );
+    showSelect( "year", true );
+    jump();
+}
+
+function updateMonth() {
+    document.getElementById( "datePickerModal" ).querySelector( "#monthTitle" ).innerText = getSelectedOptionValue( "monthTitleSelect" );
+    showSelect( "month", true );
+    jump();
+}
+
+function jump() {
+    jumpTo( getDisplayDate() );
+}
+
+function jumpTo( displayDate ) {
+    let modal = document.getElementById( "datePickerModal" );
+    let modalBody = modal.querySelector( "#modalBody" );
+    let calendar = modalBody.querySelector( "#calendar" );
+    calendar.innerHTML = "";
+    generateDatePicker( modalBody, calendar, displayDate );
+}
+
+function selectDay( date ) {
+    let modalBody = document.getElementById( "datePickerModal" ).querySelector( "#modalBody" );
+    let internalDate = getInternalDate() || new Date();
+    internalDate.setFullYear( modalBody.querySelector( "#yearTitle" ).innerText );
+    internalDate.setMonth( getMonthIndex( modalBody.querySelector( "#monthTitle" ).innerText ) );
+    internalDate.setDate( date );
+    setInternalDate( internalDate );
+}
+
+function updateHour() {
+    let internalDate = getInternalDate() || new Date();
+    internalDate.setHours( getSelectedOptionValue( "hourSelect" ) );
+    setInternalDate( internalDate );
+}
+
+function updateMinute() {
+    let internalDate = getInternalDate() || new Date();
+    internalDate.setMinutes( getSelectedOptionValue( "minuteSelect" ) );
+    setInternalDate( internalDate );
+}
+
+function getDisplayDate() {
+    let modalBody = document.getElementById( "datePickerModal" ).querySelector( "#modalBody" );
+    let day    = 1;
+    let month  = getMonthIndex( modalBody.querySelector( "#monthTitle" ).innerText );
+    let year   = modalBody.querySelector( "#yearTitle" ).innerText;
+    return new Date( year, month, day );
+}
+
+function getInternalDate() {
+    return newDate( document.getElementById( "datePickerModal" ).querySelector( "#internalDate" ).value );
+}
+
+function setInternalDate( internalDate ) {
+    return document.getElementById( "datePickerModal" ).querySelector( "#internalDate" ).value = internalDate ? internalDate.toISOString() : null;
+}
+</script>
+
+<style>
+    .calendar {
+        display: inline-table;
+
+        border: 1px solid lightgray;
+        border-collapse: collapse;
+
+        table-layout: fixed;
+    }
+
+    .calendar th, .calendar td {
+        text-align: center;
+        overflow: hidden;
+
+        border: 1px solid lightgray;
+
+        width: 3em;
+        padding: .5em 0 .5em 0;
+    }
+
+    .calendar th {
+        color:            white;
+        background-color: black;
+    }
+
+    .calendar td {
+        cursor: pointer;
+    }
+
+    .calendar td:hover {
+        color:            white;
+        background-color: darkgray;
+    }
+
+    .todayDate {
+        color:            white;
+        background-color: lightgray;
+    }
+
+    .selectedDate {
+        color:            white;
+        background-color: black;
+    }
+</style>
+
+<div id="datePickerModal" class="modal-wrapper">
+    <div class="modal-foreground">
+        <div class="modal-box">
+            <div class="modal-header">
+                <span id="modalHeader" class="subtitle">Date/Time</span>
+                <span id="close" class="close">&times;</span>
+            </div>
+            <div id="modalBody" class="modal-body center">
+                <div style="margin: 1em 0 1em 0">
+                    <span id="monthTitle" class="link" style="font-size: 1.5em" onclick="showSelect( 'month' )">[Month]</span>
+                    <select id="monthTitleSelect" class="select" style="display: none; height: 1.5em; padding: 0; margin: auto; width: auto" onchange="updateMonth()"></select>
+                    <span id="yearTitle"  class="link" style="font-size: 1.5em" onclick="showSelect( 'year' )" >[Year]</span>
+                    <select id="yearTitleSelect"  class="select" style="display: none; height: 1.5em; padding: 0; margin: auto; width: auto" onchange="updateYear()"></select>
+                </div>
+
+                <div style="margin: 0 auto 1em auto">
+                    <img id="arrowPrev" class="clickable" style="width: 1.5em" src="https://religionandstory.com/common/images/left.png" alt="left"   onclick="changeMonth( 'prev' )">
+                    <table id="calendar" class="calendar"></table>
+                    <img id="arrowNext" class="clickable" style="width: 1.5em" src="https://religionandstory.com/common/images/right.png" alt="right" onclick="changeMonth( 'next' )">
+                </div>
+
+                <div>
+                    <label for="hourSelect" style="font-weight: bold">Hour:</label>
+                    <select id="hourSelect" name="hourSelect"     class="select" style="width: auto" onchange="updateHour()"></select>
+                    <label for="minuteSelect" style="font-weight: bold">Minute:</label>
+                    <select id="minuteSelect" name="minuteSelect" class="select" style="width: auto" onchange="updateMinute()"></select>
+                </div>
+
+                <div>
+                    <span id="todayLink" class="link" onclick="jumpTo( new Date() )">Go to Today</span>
+                </div>
+
+                <input id="internalDate" type="hidden">
+            </div>
+            <div id="modalSubmit" class="modal-submit center">
+                <button id="submitButton" class="button" style="width: 5em">Submit</button>
+                <button id="cancelButton" class="button" style="width: 5em">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <div class="modal-background"></div>
+</div>
+
+<template id="datePickerTemplate">
+    <style>
+        :host {
+            display: inline-block;
+
+            cursor: pointer; /* todo 12 - get this to work */
+            /*background: url('../images/unchecked-checkbox.svg') no-repeat;*/
+            /*background-size: contain;*/
+            /*width: 24px;*/
+            /*height: 24px;*/
+        }
+
+        :host([hidden]) {
+            display: none;
+        }
+
+        :host([disabled]) {
+            /*background: url('../images/unchecked-checkbox-disabled.svg') no-repeat;*/
+            /*background-size: contain;*/
+        }
+    </style>
+    <span id="datePickerDisplay"></span>
+    <img  id="datePickerIcon" style="width: 1.2em" src="https://religionandstory.com/common/images/calendar.png" alt="date-time">
+</template>
+
