@@ -89,7 +89,7 @@ class DatePicker extends HTMLElement {
     }
 
     setDateObject( date ) {
-        this.value = date.toISOString();
+        this.value = date ? date.toISOString() : "";
     }
 
     get value() {
