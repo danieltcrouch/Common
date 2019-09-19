@@ -25,9 +25,8 @@ function newDate( value, allowDatabaseConversion = true ) {
     return result;
 }
 
-function adjustToUTC( date ) {
-    //Useful when new Date() has incorrectly offset date assuming original value was not UTC
-    return adjustMinutes( date, -date.getTimezoneOffset() );
+function getISOString( date ) {
+    return ( date instanceof Date ) ? date.toISOString() : null
 }
 
 
@@ -51,6 +50,27 @@ function getDisplayTime( date ) {
     }
 
     return result;
+}
+
+
+/*** TIMEZONE ***/
+
+
+function adjustToUTC( date ) {
+    //Useful when new Date() has incorrectly offset date assuming original value was not UTC
+    return adjustMinutes( date, -date.getTimezoneOffset() );
+}
+
+
+/*** CALCULATE ***/
+
+
+function getMonthIndex( monthName ) {
+    return MONTHS.findIndex( m => m.includes( monthName ) );
+}
+
+function getDaysInMonth( month, year ) {
+    return 32 - new Date(year, month, 32).getDate();
 }
 
 
@@ -83,18 +103,6 @@ function zeroSecondsAndBelow( date ) {
         date.setSeconds(0,0);
     }
     return date;
-}
-
-
-/*** CALCULATE ***/
-
-
-function getMonthIndex( monthName ) {
-    return MONTHS.findIndex( m => m.includes( monthName ) );
-}
-
-function getDaysInMonth( month, year ) {
-    return 32 - new Date(year, month, 32).getDate();
 }
 
 
