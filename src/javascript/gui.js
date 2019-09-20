@@ -6,6 +6,7 @@ $(document).on( "click", ".inverseTab", selectTabButton );
 /*****************DISPLAY*****************/
 
 
+//TODO - do general clean-up for this whole project
 function showInstructions( e )
 {
     showMessage( "Instructions", $('#helpText').html() );

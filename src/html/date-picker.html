@@ -16,10 +16,8 @@ class DatePicker extends HTMLElement {
         super();
 
         let datePickerTemplate = document.getElementById( "datePickerTemplate" );
-        this.appendChild( datePickerTemplate.content.cloneNode( true ) );
-        //todo 12 - use this but not right now because I have no idea how it and slots work
-        //let shadowRoot = this.attachShadow( {mode: "open"} );
-        //shadowRoot.appendChild( datePickerTemplate.content.cloneNode(true) );
+        let shadowRoot = this.attachShadow( {mode: "open"} );
+        shadowRoot.appendChild( datePickerTemplate.content.cloneNode(true) );
     }
 
     static get observedAttributes() {
@@ -28,7 +26,7 @@ class DatePicker extends HTMLElement {
 
     connectedCallback() {
         if ( !this.hasAttribute( "date" ) ) {
-            let display = document.getElementById( "datePickerDisplay" );
+            let display = this.shadowRoot.getElementById( "datePickerDisplay" );
             display.style.fontStyle = "italic";
             display.innerText = DATE_PICKER_DEFAULT;
         }
@@ -55,7 +53,7 @@ class DatePicker extends HTMLElement {
         const hasValue = newValue !== null;
         switch (attributeName) {
             case "value":
-                let display = this.querySelector( "#datePickerDisplay" );
+                let display = this.shadowRoot.getElementById( "datePickerDisplay" );
                 display.innerText = hasValue ? getDisplayTime( this.getDateObject() ) : DATE_PICKER_DEFAULT;
                 break;
             case "type":
@@ -370,7 +368,12 @@ function setInternalDate( internalDate ) {
 
     .calendar td:hover {
         color:            white;
-        background-color: darkgray;
+        background-color: gray;
+    }
+
+    .calendar td.selectedDate:hover {
+        color:            white;
+        background-color: dimgray;
     }
 
     .todayDate {
@@ -407,9 +410,9 @@ function setInternalDate( internalDate ) {
 
                 <div>
                     <label for="hourSelect" style="font-weight: bold">Hour:</label>
-                    <select id="hourSelect" name="hourSelect"     class="select" style="width: auto" onchange="updateHour()"></select>
-                    <label for="minuteSelect" style="font-weight: bold">Minute:</label>
-                    <select id="minuteSelect" name="minuteSelect" class="select" style="width: auto" onchange="updateMinute()"></select>
+                    <select id="hourSelect" name="hourSelect"     class="select" style="width: auto; height: 2em; padding: 0 5px" onchange="updateHour()"></select>
+                    <label for="minuteSelect" style="font-weight: bold; margin-left: .5em">Minute:</label>
+                    <select id="minuteSelect" name="minuteSelect" class="select" style="width: auto; height: 2em; padding: 0 5px" onchange="updateMinute()"></select>
                 </div>
 
                 <div>
@@ -432,11 +435,7 @@ function setInternalDate( internalDate ) {
         :host {
             display: inline-block;
 
-            cursor: pointer; /* todo 12 - get this to work */
-            /*background: url('../images/unchecked-checkbox.svg') no-repeat;*/
-            /*background-size: contain;*/
-            /*width: 24px;*/
-            /*height: 24px;*/
+            cursor: pointer;
         }
 
         :host([hidden]) {
@@ -444,8 +443,6 @@ function setInternalDate( internalDate ) {
         }
 
         :host([disabled]) {
-            /*background: url('../images/unchecked-checkbox-disabled.svg') no-repeat;*/
-            /*background-size: contain;*/
         }
     </style>
     <span id="datePickerDisplay"></span>
