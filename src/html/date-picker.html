@@ -333,7 +333,7 @@ function getInternalDate() {
 }
 
 function setInternalDate( internalDate ) {
-    return document.getElementById( "datePickerModal" ).querySelector( "#internalDate" ).value = internalDate ? internalDate.toISOString() : null;
+    return document.getElementById( "datePickerModal" ).querySelector( "#internalDate" ).value = getISOString( internalDate );
 }
 </script>
 

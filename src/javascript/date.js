@@ -13,13 +13,20 @@ const DAYS_IN_WEEK = 7;
 /*** BASIC ***/
 
 
-function newDate( value, allowDatabaseConversion = true ) {
+function newDate( value ) {
     let result = null;
     if ( value ) {
-        result = new Date( value );
-        let isDatabaseTimestamp = result.toISOString() !== value;
-        if ( allowDatabaseConversion && isDatabaseTimestamp ) {
-            result = adjustToUTC( result );
+        if ( isISOString( value ) ) {
+            result = new Date( value );
+        }
+        else {
+            let temp = new Date( value );
+            if ( ! temp instanceof Date ) {
+                const valueFields = value.split(/\D/);
+                temp = new Date( Date.UTC(valueFields[0], --valueFields[1], valueFields[2], valueFields[3], valueFields[4], valueFields[5]) );
+                temp = ( temp instanceof Date ) ? temp : null;
+            }
+            result = temp;
         }
     }
     return result;
@@ -27,6 +34,11 @@ function newDate( value, allowDatabaseConversion = true ) {
 
 function getISOString( date ) {
     return ( date instanceof Date ) ? date.toISOString() : null
+}
+
+function isISOString( value ) {
+    let date = new Date( value );
+    return ( date instanceof Date ) && date.toISOString() === value;
 }
 
 
