@@ -21,10 +21,10 @@ function newDate( value ) {
         }
         else {
             let temp = new Date( value );
-            if ( ! temp instanceof Date ) {
+            if ( !isValidDate( temp ) ) {
                 const valueFields = value.split(/\D/);
                 temp = new Date( Date.UTC(valueFields[0], --valueFields[1], valueFields[2], valueFields[3], valueFields[4], valueFields[5]) );
-                temp = ( temp instanceof Date ) ? temp : null;
+                temp = isValidDate( temp ) ? temp : null;
             }
             result = temp;
         }
@@ -33,12 +33,16 @@ function newDate( value ) {
 }
 
 function getISOString( date ) {
-    return ( date instanceof Date ) ? date.toISOString() : null
+    return isValidDate( date ) ? date.toISOString() : null
 }
 
 function isISOString( value ) {
     let date = new Date( value );
-    return ( date instanceof Date ) && date.toISOString() === value;
+    return isValidDate( date ) && date.toISOString() === value;
+}
+
+function isValidDate( date ) {
+    return date && ( date instanceof Date ) && !isNaN( date.valueOf() );
 }
 
 
