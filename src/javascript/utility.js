@@ -18,7 +18,7 @@ function hideById( idName, hide = true ) {
     id( idName ).style.display = hide ? "none" : "";
 }
 
-function hideByClass( className, hide = true, all = false ) {
+function hideByClass( className, hide = true, all = true ) {
     let elements = cl( className );
     if ( all ) {
         elements.forEach( e => e.style.display = hide ? "none" : "" );
@@ -28,7 +28,7 @@ function hideByClass( className, hide = true, all = false ) {
     }
 }
 
-function hideByName( nameName, hide = true, all = false ) {
+function hideByName( nameName, hide = true, all = true ) {
     let elements = nm( nameName );
     if ( all ) {
         elements.forEach( e => e.style.display = hide ? "none" : "" );
