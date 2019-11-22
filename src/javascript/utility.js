@@ -45,3 +45,18 @@ function hideByName( nameName, hide = true, all = false ) {
 function capitalize( value ) {
     return value.charAt(0).toUpperCase() + value.slice(1);
 }
+
+
+/*** AJAX ***/
+
+
+function jsonParse( response ) {
+    let result = null;
+    try {
+        result = JSON.parse( response );
+    }
+    catch ( e ) {
+        result = null;
+    }
+    return result;
+}
