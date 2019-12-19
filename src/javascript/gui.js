@@ -6,6 +6,15 @@ $(document).on( "click", ".inverseTab", selectTabButton );
 /*****************DISPLAY*****************/
 
 
+function docReady( fn ) {
+    if ( document.readyState === "complete" || document.readyState === "interactive" ) {
+        setTimeout( fn, 1 );
+    }
+    else {
+        document.addEventListener( "DOMContentLoaded", fn );
+    }
+}
+
 //TODO - do general clean-up for this whole project
 function showInstructions( e )
 {
@@ -355,6 +364,7 @@ function closeModalJS( modalId )
 function closeModal( modal )
 {
     $('body').removeClass( "blur" );
+    modal.find('#modalBody').removeAttr( 'style' );
     modal.hide();
 }
 
