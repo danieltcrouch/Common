@@ -15,6 +15,27 @@ function docReady( fn ) {
     }
 }
 
+function hide( obj ) {
+    show( obj, false );
+}
+
+function show( obj, isShow = true, displayType = "" ) {
+    let element = null;
+    if ( typeof obj === "string" ) {
+        element = id( obj );
+    }
+    else if ( obj instanceof Element ) {
+        element = obj;
+    }
+    else if ( Array.isArray( obj ) ) {
+        obj.forEach( o => show( o, isShow, displayType ) );
+    }
+
+    if ( element && element.style ) {
+        element.style.display = isShow ? displayType : "none";
+    }
+}
+
 //TODO - do general clean-up for this whole project
 function showInstructions( e )
 {
