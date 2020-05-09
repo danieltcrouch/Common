@@ -143,9 +143,6 @@ function launchDatePickerModal( datePicker ) {
     setInternalDate( datePicker.getDateObject() );
     generateDatePicker( modalBody, calendar, getInternalDate() || new Date() );
 
-    modal.style.display = "block";
-    document.getElementsByTagName( "body" )[0].classList.add( "blur" );
-
     function close()
     {
         document.getElementsByTagName( "body" )[0].classList.remove( "blur" );
@@ -160,6 +157,8 @@ function launchDatePickerModal( datePicker ) {
     }
 
     setCloseHandlersJS( "datePickerModal", close, confirm );
+
+    show( modal, true, "block" );
     blurBackground();
 }
 

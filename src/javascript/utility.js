@@ -39,6 +39,26 @@ function hideByName( nameName, hide = true, all = true ) {
 }
 
 
+/*** ARRAY ***/
+
+
+function remove( array, value ) {
+    array.splice( array.indexOf( value ), 1 );
+}
+
+function removeObject( array, comparisonFunction ) {
+    array.splice( array.findIndex( comparisonFunction ), 1 );
+}
+
+function removeAll( array, value ) {
+    array = array.filter( e => e !== value );
+}
+
+function removeAllObjects( array, comparisonFunction ) {
+    array = array.filter( e => !comparisonFunction(e) );
+}
+
+
 /*** STRING ***/
 
 

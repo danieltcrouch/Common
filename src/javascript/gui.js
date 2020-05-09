@@ -389,43 +389,42 @@ function closeModal( modal )
     modal.hide();
 }
 
-function setCloseHandlersJS( modalId, cancel, submit, normalCloseWithX, leftButton, rightButton )
+function setCloseHandlersJS( modalId, cancel, submit )
 {
-    setCloseHandlers( $('#' + modalId), cancel, submit, normalCloseWithX, leftButton, rightButton );
+    setCloseHandlers( $('#' + modalId), cancel, submit );
 }
 
-function setCloseHandlers( modal, cancel, submit, normalCloseWithX, leftButton, rightButton )
+function setCloseHandlers( modal, cancel, submit )
 {
-    var defaultClose = function() { closeModal( modal ) };
+    let defaultClose = function() { closeModal( modal ) };
     cancel = cancel || defaultClose;
     submit = submit || cancel;
 
-    leftButton = leftButton || modal.find('#submitButton');
-    leftButton.off( "click" );
-    leftButton.click( submit );
-    rightButton = rightButton || modal.find('#cancelButton');
-    rightButton.off( "click" );
-    rightButton.click( cancel );
+    let submitButton = modal.find('#submitButton');
+    submitButton.off( "click" );
+    submitButton.click( submit );
+    let cancelButton = modal.find('#cancelButton');
+    cancelButton.off( "click" );
+    cancelButton.click( cancel );
 
     var prompt = modal.find('#prompt');
     if ( prompt && prompt.is( "input" ) )
     {
-        modal.find('#prompt').off( "keyup" );
-        modal.find('#prompt').keyup( function(e) {
+        prompt.off( "keyup" );
+        prompt.keyup( function(e) {
             if ( e.keyCode === 13 || e.which === 13 ) {
                 submit();
             }
         });
     }
 
-    var close = normalCloseWithX ? defaultClose : cancel;
     modal.find('.close').off( "click" ); //Close (X) Button
-    modal.find('.close').click( close );
+    modal.find('.close').click( cancel );
 
     $(window).off( "click" );
     $(window).click(function(e) {
         if ( e.target.parentNode.id === modal.attr("id") ) {
-            close();
+            cancel();
         }
     });
 }
@@ -487,40 +486,6 @@ function showConfirm( headerText, message, callback, style )
     }
 
     setCloseHandlers( modal, close, confirm );
-    blurBackground();
-}
-
-function showBinaryChoice( headerText, message, leftChoice, rightChoice, callback, style )
-{
-    var modal = $('#binaryModal');
-    var header = modal.find('#modalHeader');
-    var body = modal.find('#modalBody');
-
-    header.text( headerText );
-    body.html( message );
-    if ( style )
-    {
-        body.css( style );
-    }
-
-    var leftButton = modal.find('#leftButton');
-    var rightButton = modal.find('#rightButton');
-    leftButton.html( leftChoice );
-    rightButton.html( rightChoice );
-    modal.show();
-
-    function close( answer )
-    {
-        closeModal( modal );
-        callback( answer === true );
-    }
-
-    function confirm()
-    {
-        close( true ); //returns TRUE for clicking Left Choice
-    }
-
-    setCloseHandlers( modal, close, confirm, true, leftButton, rightButton );
     blurBackground();
 }
 
@@ -612,6 +577,49 @@ function showBigPrompt( headerText, message, callback, value, clearAfterward, st
     }
 
     setCloseHandlers( modal, close, submit );
+    blurBackground();
+}
+
+
+/*****************MODAL NEW*****************/
+
+
+function showBinaryChoice( headerText, message, leftChoice, rightChoice, callback ) { //todo 4 - apply to Football and Reviews (just need to adjust callback to handle index; startup.php to have write html file)
+    showChoices( headerText, message, [leftChoice, rightChoice], callback );
+}
+
+function showChoices( headerText, messageText, choiceTexts, callback ) {
+    const modal = id( 'choiceModal' );
+    const header  = modal.querySelector( '#modalHeader' );
+    const message = modal.querySelector( '#modalMessage' );
+    const choices = modal.querySelector( '#modalChoices' );
+
+    header.innerText = headerText;
+    message.innerText = messageText;
+    for ( let i = 0; i < choiceTexts.length; i++ ) {
+        const text = choiceTexts[i];
+        let button = document.createElement( "BUTTON" );
+        button.innerText = text;
+        button.style.width = "8em";
+        button.style.margin = ".5em .5em";
+        button.classList.add( "button" );
+        button.onclick = function() {
+            choices.innerHTML = "";
+            closeModalJS( modal.id );
+            callback( i );
+        };
+        choices.appendChild( button );
+    }
+
+    function close() {
+        choices.innerHTML = "";
+        closeModalJS( modal.id );
+        callback( null );
+    }
+
+    setCloseHandlersJS( modal.id, close );
+
+    show( modal, true, "block" );
     blurBackground();
 }
 
