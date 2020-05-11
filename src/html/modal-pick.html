@@ -1,5 +1,5 @@
-<!-- Normal modal must be included for CSS -->
-<div id="choiceModal" class="modal-wrapper">
+<!-- Common modals must be included for CSS -->
+<div id="pickModal" class="modal-wrapper">
     <div class="modal-foreground">
         <div class="modal-box">
             <div class="modal-header">
@@ -8,9 +8,11 @@
             </div>
             <div id="modalBody" class="modal-body center">
                 <div id="modalMessage"></div>
-                <div id="modalChoices" style="display: flex; flex-wrap: wrap; justify-content: center"></div>
+                <div id="modalPicks" style="text-align: left"></div>
             </div>
             <div id="modalSubmit" class="modal-submit center">
+                <button id="submitButton" class="button" style="width: 5em">Submit</button>
+                <button id="cancelButton" class="button" style="width: 5em">Cancel</button>
             </div>
         </div>
     </div>

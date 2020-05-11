@@ -66,6 +66,13 @@ function capitalize( value ) {
     return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
+function camelize( value ) {
+    return value.replace( /(?:^\w|[A-Z]|\b\w|\s+)/g, function( match, index ) {
+        if (/\s+/.test(match)) return "";
+        return index === 0 ? match.toLowerCase() : match.toUpperCase();
+    } );
+}
+
 
 /*** AJAX ***/
 

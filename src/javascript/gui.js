@@ -596,6 +596,17 @@ function showChoices( headerText, messageText, choiceTexts, callback ) {
 
     header.innerText = headerText;
     message.innerText = messageText;
+
+    function clear() {
+        choices.innerHTML = "";
+        closeModalJS( modal.id );
+    }
+
+    function close() {
+        clear();
+        callback( null );
+    }
+
     for ( let i = 0; i < choiceTexts.length; i++ ) {
         const text = choiceTexts[i];
         let button = document.createElement( "BUTTON" );
@@ -604,20 +615,82 @@ function showChoices( headerText, messageText, choiceTexts, callback ) {
         button.style.margin = ".5em .5em";
         button.classList.add( "button" );
         button.onclick = function() {
-            choices.innerHTML = "";
-            closeModalJS( modal.id );
+            clear();
             callback( i );
         };
         choices.appendChild( button );
     }
 
-    function close() {
-        choices.innerHTML = "";
+    setCloseHandlersJS( modal.id, close );
+
+    show( modal, true, "block" );
+    blurBackground();
+}
+
+function showPicks( headerText, messageText, pickTexts, allowMultiple, allowSelectAll, callback ) {
+    const modal = id( 'pickModal' );
+    const header  = modal.querySelector( '#modalHeader' );
+    const message = modal.querySelector( '#modalMessage' );
+    const picks   = modal.querySelector( '#modalPicks' );
+
+    header.innerText = headerText;
+    message.innerText = messageText;
+    if ( allowMultiple && allowSelectAll ) {
+        let div = document.createElement( "DIV" );
+        let input = document.createElement( "INPUT" );
+        input.id = "pickSelectAll";
+        input.type = "checkbox";
+        input.onclick = function() { nm('picks').forEach( i => i.checked = this.checked ); };
+        let label = document.createElement( "LABEL" );
+        label.htmlFor = "pickSelectAll";
+        label.innerHTML = "Select All";
+        div.appendChild( input );
+        div.appendChild( label );
+        picks.appendChild( div );
+    }
+    for ( let i = 0; i < pickTexts.length; i++ ) {
+        const text = pickTexts[i];
+        const id = "pick-" + i;
+        let div = document.createElement( "DIV" );
+        let input = document.createElement( "INPUT" );
+        input.id = id;
+        input.name = "picks";
+        input.type = allowMultiple ? "checkbox" : "radio";
+        let label = document.createElement( "LABEL" );
+        label.htmlFor = id;
+        label.innerHTML = text;
+        div.appendChild( input );
+        div.appendChild( label );
+        picks.appendChild( div );
+    }
+
+    function clear() {
+        if ( allowMultiple && allowSelectAll ) {
+            id('pickSelectAll').checked = false;
+        }
+        nm('picks').forEach( i => i.checked = false );
         closeModalJS( modal.id );
+    }
+
+    function close() {
+        clear();
         callback( null );
     }
 
-    setCloseHandlersJS( modal.id, close );
+    function submit() {
+        let result;
+        if ( allowMultiple ) {
+            result = nm( 'picks' ).filter( i => i.checked ).map( i => i.id.split( '-' )[1] );
+        }
+        else {
+            const checkedInput = nm( 'picks' ).find( i => i.checked );
+            result = checkedInput ? checkedInput.id.split( '-' )[1] : null;
+        }
+        clear();
+        callback( result );
+    }
+
+    setCloseHandlersJS( modal.id, close, submit );
 
     show( modal, true, "block" );
     blurBackground();
