@@ -640,7 +640,11 @@ function showPicks( headerText, messageText, pickTexts, allowMultiple, allowSele
         let input = document.createElement( "INPUT" );
         input.id = "pickSelectAll";
         input.type = "checkbox";
-        input.onclick = function() { nm('picks').forEach( i => i.checked = this.checked ); };
+        input.onclick = function() { nm('picks').forEach( i => {
+            if ( !i.disabled ) {
+                i.checked = this.checked
+            }
+        } ); };
         let label = document.createElement( "LABEL" );
         label.htmlFor = "pickSelectAll";
         label.innerHTML = "Select All";
@@ -649,13 +653,23 @@ function showPicks( headerText, messageText, pickTexts, allowMultiple, allowSele
         picks.appendChild( div );
     }
     for ( let i = 0; i < pickTexts.length; i++ ) {
-        const text = pickTexts[i];
+        let text = pickTexts[i];
+        let disabled = false;
+        let checked = false;
+        if ( typeof text === "string" ) {
+            text = text.value || text;
+            disabled = text.disabled || disabled;
+            checked = text.checked || checked;
+        }
+
         const id = "pick-" + i;
         let div = document.createElement( "DIV" );
         let input = document.createElement( "INPUT" );
         input.id = id;
         input.name = "picks";
         input.type = allowMultiple ? "checkbox" : "radio";
+        input.disabled = disabled;
+        input.checked = checked;
         let label = document.createElement( "LABEL" );
         label.htmlFor = id;
         label.innerHTML = text;
@@ -680,11 +694,11 @@ function showPicks( headerText, messageText, pickTexts, allowMultiple, allowSele
     function submit() {
         let result;
         if ( allowMultiple ) {
-            result = nm( 'picks' ).filter( i => i.checked ).map( i => i.id.split( '-' )[1] );
+            result = nm( 'picks' ).filter( i => i.checked && !i.disabled ).map( i => parseInt( i.id.split( '-' )[1] ) );
         }
         else {
             const checkedInput = nm( 'picks' ).find( i => i.checked );
-            result = checkedInput ? checkedInput.id.split( '-' )[1] : null;
+            result = checkedInput ? parseInt( checkedInput.id.split( '-' )[1] ) : null;
         }
         clear();
         callback( result );
