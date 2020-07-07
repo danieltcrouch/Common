@@ -77,8 +77,40 @@ function camelize( value ) {
 /*** AJAX ***/
 
 
+function postCallEncoded( endPoint, data, successCallback, failureCallback = function(){}, asynchronous = true ) {
+    return postCall( endPoint, data, successCallback, failureCallback, asynchronous, false );
+}
+
+function postCall( endPoint, data, successCallback = function(){}, failureCallback = function(){}, asynchronous = true, contentTypeJson = true ) {
+    let contentType = contentTypeJson ? "application/json" : "application/x-www-form-urlencoded; charset=UTF-8"; //using contentTypeJson allows not using $_POST in php controllers
+    data = contentTypeJson ? JSON.stringify( data ) : urlEncodeJson( data );
+
+    let httpRequest = new XMLHttpRequest();
+    httpRequest.open( "POST", endPoint, asynchronous );
+    httpRequest.setRequestHeader( "Content-Type", contentType );
+    httpRequest.onload = function() {
+        if ( this.status === 200 ) {
+            successCallback( jsonParse( this.responseText ) );
+        }
+        else {
+            console.log( this.responseText );
+            failCallback();
+        }
+    };
+    httpRequest.send( data );
+}
+
+function urlEncodeJson( data ) {
+    let result = [];
+    for ( let key in data ) {
+        const value = JSON.stringify( data[key] );
+        result.push( encodeURIComponent( key ) + "=" + encodeURIComponent( value ) );
+    }
+    return result.join("&");
+}
+
 function jsonParse( response ) {
-    let result = null;
+    let result;
     try {
         result = JSON.parse( response );
     }

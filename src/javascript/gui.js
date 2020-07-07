@@ -36,7 +36,6 @@ function show( obj, isShow = true, displayType = "" ) {
     }
 }
 
-//TODO - do general clean-up for this whole project
 function showInstructions( e )
 {
     showMessage( "Instructions", $('#helpText').html() );
@@ -55,6 +54,9 @@ function scrollToId( id )
 
 /******************SELECT******************/
 
+
+const NONE_OPTION   = {text: "None", value: null};
+const SELECT_OPTION = {text: "Select One", value: null};
 
 function chooseSelectOptionValue( elementId, value )
 {
@@ -489,7 +491,12 @@ function showConfirm( headerText, message, callback, style )
     blurBackground();
 }
 
-function showPrompt( headerText, message, callback, placeholder, clearAfterward, style )
+function showNumberPrompt( headerText, message, callback, placeholder )
+{
+    showPrompt( headerText, message, callback, placeholder, true );
+}
+
+function showPrompt( headerText, message, callback, placeholder, isNumber, style )
 {
     var modal = $('#promptModal');
     var header = modal.find('#modalHeader');
@@ -498,6 +505,7 @@ function showPrompt( headerText, message, callback, placeholder, clearAfterward,
 
     header.text( headerText );
     prompt.attr( "placeholder", placeholder );
+    prompt[0].type = isNumber ? "number" : "text";
     body.html( message );
     if ( style )
     {
@@ -509,13 +517,11 @@ function showPrompt( headerText, message, callback, placeholder, clearAfterward,
 
     function clear()
     {
-        closeModal( modal );
-
         var value = prompt.val();
-        if ( clearAfterward )
-        {
-            prompt.val( "" );
-        }
+
+        closeModal( modal );
+        prompt.val( "" );
+
         return value;
     }
 
@@ -584,7 +590,7 @@ function showBigPrompt( headerText, message, callback, value, clearAfterward, st
 /*****************MODAL NEW*****************/
 
 
-function showBinaryChoice( headerText, message, leftChoice, rightChoice, callback ) { //todo 4 - apply to Football and Reviews (just need to adjust callback to handle index; startup.php to have write html file)
+function showBinaryChoice( headerText, message, leftChoice, rightChoice, callback ) {
     showChoices( headerText, message, [leftChoice, rightChoice], callback );
 }
 
@@ -627,7 +633,7 @@ function showChoices( headerText, messageText, choiceTexts, callback ) {
     blurBackground();
 }
 
-function showPicks( headerText, messageText, pickTexts, allowMultiple, allowSelectAll, callback ) {
+function showPicks( headerText, messageText, pickTexts, allowMultiple, allowSelectAllOrNone, callback ) {
     const modal = id( 'pickModal' );
     const header  = modal.querySelector( '#modalHeader' );
     const message = modal.querySelector( '#modalMessage' );
@@ -635,7 +641,7 @@ function showPicks( headerText, messageText, pickTexts, allowMultiple, allowSele
 
     header.innerText = headerText;
     message.innerText = messageText;
-    if ( allowMultiple && allowSelectAll ) {
+    if ( allowMultiple && allowSelectAllOrNone ) {
         let div = document.createElement( "DIV" );
         let input = document.createElement( "INPUT" );
         input.id = "pickSelectAll";
@@ -677,6 +683,19 @@ function showPicks( headerText, messageText, pickTexts, allowMultiple, allowSele
         div.appendChild( label );
         picks.appendChild( div );
     }
+    if ( !allowMultiple && allowSelectAllOrNone ) {
+        let div = document.createElement( "DIV" );
+        let input = document.createElement( "INPUT" );
+        input.id = "pickNone";
+        input.name = "picks";
+        input.type = "radio";
+        let label = document.createElement( "LABEL" );
+        label.htmlFor = "pickNone";
+        label.innerHTML = "None";
+        div.appendChild( input );
+        div.appendChild( label );
+        picks.appendChild( div );
+    }
 
     function clear() {
         if ( allowMultiple && allowSelectAll ) {
@@ -698,7 +717,7 @@ function showPicks( headerText, messageText, pickTexts, allowMultiple, allowSele
         }
         else {
             const checkedInput = nm( 'picks' ).find( i => i.checked );
-            result = checkedInput ? parseInt( checkedInput.id.split( '-' )[1] ) : null;
+            result = checkedInput ? ( checkedInput.id === "pickNone" ? -1 : parseInt( checkedInput.id.split( '-' )[1] ) ) : null;
         }
         clear();
         callback( result );
