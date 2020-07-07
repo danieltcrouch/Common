@@ -1,0 +1,5 @@
+<IfModule mod_headers.c>
+    SetEnvIf Origin "http(s)?://(www\.)?(religionandstory.com|bracket.religionandstory.com|football.religionandstory.com|overflow.religionandstory.com|reviews.religionandstory.com|seven.religionandstory.com|turing.religionandstory.com|seven.dcrouch.site)$" AccessControlAllowOrigin=$0
+    Header add Access-Control-Allow-Origin %{AccessControlAllowOrigin}e env=AccessControlAllowOrigin
+    Header merge Vary Origin
+</IfModule>

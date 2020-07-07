@@ -1,10 +1,12 @@
 //https://developers.google.com/identity/sign-in/web/sign-in
-let loginCallback = function() {};
-let appName = "";
+let loginAttributes = {
+    callback: function() {},
+    appName:  ""
+};
 
 function setLoginAttributes( applicationCode, loginCallbackFunction ) {
-    appName = applicationCode;
-    loginCallback = loginCallbackFunction;
+    loginAttributes.appName = applicationCode;
+    loginAttributes.appName = loginCallbackFunction;
 }
 
 function onSignIn( googleUser, createNew = true ) {
@@ -27,15 +29,15 @@ function initializeUser() {
 
 function validateUser( authToken ) {
     postCallEncoded(
-        "php/common-signin.php",
+        "https://religionandstory.com/common/php/common-signin.php",
         {
             action:    "validateUser",
-            appName:   appName,
+            appName:   loginAttributes.appName,
             authToken: authToken
         },
         function( response ) {
             if ( response ) {
-                loginCallback();
+                loginAttributes.callback();
             }
             else {
                 failCallback();
