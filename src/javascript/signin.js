@@ -6,7 +6,7 @@ let loginAttributes = {
 
 function setLoginAttributes( applicationCode, loginCallbackFunction ) {
     loginAttributes.appName = applicationCode;
-    loginAttributes.appName = loginCallbackFunction;
+    loginAttributes.callback = loginCallbackFunction;
 }
 
 function onSignIn( googleUser, createNew = true ) {
@@ -37,7 +37,7 @@ function validateUser( authToken ) {
         },
         function( response ) {
             if ( response ) {
-                loginAttributes.callback();
+                loginAttributes.callback( response );
             }
             else {
                 failCallback();

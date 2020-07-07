@@ -103,7 +103,7 @@ function postCall( endPoint, data, successCallback = function(){}, failureCallba
 function urlEncodeJson( data ) {
     let result = [];
     for ( let key in data ) {
-        const value = JSON.stringify( data[key] );
+        const value = (typeof data[key] === "object" && data[key] !== null) ? JSON.stringify( data[key] ) : data[key];
         result.push( encodeURIComponent( key ) + "=" + encodeURIComponent( value ) );
     }
     return result.join("&");
