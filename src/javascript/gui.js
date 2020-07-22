@@ -639,6 +639,7 @@ function showPicks( headerText, messageText, pickTexts, allowMultiple, allowSele
     const message = modal.querySelector( '#modalMessage' );
     const picks   = modal.querySelector( '#modalPicks' );
 
+    picks.innerHTML = "";
     header.innerText = headerText;
     message.innerText = messageText;
     if ( allowMultiple && allowSelectAllOrNone ) {
